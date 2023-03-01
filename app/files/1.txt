@@ -1,0 +1,5 @@
+{
+  "p": "sns",
+  "op": "reg",
+  "name": "exemplu1.sats"
+}
