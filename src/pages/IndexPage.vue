@@ -19,43 +19,79 @@
         >
           <q-card class="bg-transparent no-shadow" style="height: 28rem;"
                   :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
-            <q-card-section>
-              <div class="text-subtitle1 ">Upload your files to begin, we will inscribe and send them to you:</div>
+            <q-card-section class="q-pa-none text-center">
+              <q-btn @click="selected_tab='Files'" :class="selected_tab=='Files'?'active_item':''" color="grey-6" no-caps outline size="lg" :label="'Files'"/>
+              <q-btn @click="selected_tab='Sns'" :class="selected_tab=='Sns'?'active_item':''" class="q-ml-md" color="grey-6" no-caps outline size="lg" :label="'Sns'"/>
             </q-card-section>
-            <q-card-section class="text-center items-center justify-center">
-              <q-uploader class="dropzone no-shadow" ref="file"
-                          url="http://localhost:4444/upload"
-                          @added="handleAdded"
-                          multiple
-              >
-                <template v-slot:list="scope">
-                  <q-list separator dark>
-                    <q-item v-for="file in scope.files.sort(naturalCompare)" :key="file.__key"
-                            class="full-width q-my-xs q-pa-md" style="border-color: ">
-                      <q-item-section class="text-center">
-                        <q-item-label class="full-width text-weight-bolder ellipsis">
-                          {{ file.name }}
-                        </q-item-label>
 
-                        <q-item-label caption class="text-white">
-                          {{ file.__sizeLabel }} / <span v-if="file_data_display.hasOwnProperty(file.name)"> {{ file_data_display[file.name]['contentType'] }}</span>
-                          <!--                / {{ file.__progressLabel }}-->
-                        </q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
+            <div v-if="selected_tab=='Files'">
+              <q-card-section class="q-pb-none">
+                <div class="text-subtitle1 ">Upload your files to begin, we will inscribe and send them to you:</div>
+              </q-card-section>
+              <q-card-section class="text-center items-center justify-center">
+                <q-uploader class="dropzone no-shadow" ref="file"
+                            url="http://localhost:4444/upload"
+                            @added="handleAdded"
+                            multiple
+                >
+                  <template v-slot:list="scope">
+                    <q-list separator dark>
+                      <q-item v-for="file in scope.files.sort(naturalCompare)" :key="file.__key"
+                              class="full-width q-my-xs q-pa-md" style="border-color: ">
+                        <q-item-section class="text-center">
+                          <q-item-label class="full-width text-weight-bolder ellipsis">
+                            {{ file.name }}
+                          </q-item-label>
 
-                  <q-item-section class="drag-drop" v-if="scope.files.length==0">
-                    <q-item-label>
-                      <q-icon name="cloud_upload" class="cursor-pointer" size="100px" @click="$refs.file.pickFiles()"
-                              color="white"/>
-                      <div>{{ dropzoneText }}</div>
-                    </q-item-label>
-                  </q-item-section>
+                          <q-item-label caption class="text-white">
+                            {{ file.__sizeLabel }} / <span v-if="file_data_display.hasOwnProperty(file.name)"> {{
+                              file_data_display[file.name]['contentType']
+                            }}</span>
+                            <!--                / {{ file.__progressLabel }}-->
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
 
-                </template>
-              </q-uploader>
-            </q-card-section>
+                    <q-item-section class="drag-drop" v-if="scope.files.length==0">
+                      <q-item-label>
+                        <q-icon name="cloud_upload" class="cursor-pointer" size="100px" @click="$refs.file.pickFiles()"
+                                color="white"/>
+                        <div>{{ dropzoneText }}</div>
+                      </q-item-label>
+                    </q-item-section>
+
+                  </template>
+                </q-uploader>
+              </q-card-section>
+            </div>
+            <div v-if="selected_tab=='Sns'">
+              <q-card-section>
+                <div class="text-subtitle1 ">Add your .sats names below, each one on a new line.</div>
+              </q-card-section>
+              <q-card-section class="text-center items-center justify-center">
+                <q-input
+                  type="textarea" color="secondary"
+                  v-model="snstext" outlined dark
+                  @keyup.enter="snsTextProcess"
+                />
+              </q-card-section>
+<!--              <q-card-section>-->
+<!--                <q-list>-->
+<!--                  <q-item-label header class="text-white text-subtitle1">Items</q-item-label>-->
+<!--                  <template v-for="(item, item_index) in sns_array_data">-->
+<!--                    <q-item class="rounded-borders bg-transparent q-my-sm active_border_secondary">-->
+<!--                      <q-item-section side class="text-white">-->
+<!--                        {{ item_index + 1 }}-->
+<!--                      </q-item-section>-->
+<!--                      <q-item-section :class="sns_array_status.hasOwnProperty(item)?'text-positive text-wright-bolder':''">-->
+<!--                        {{ item }}-->
+<!--                      </q-item-section>-->
+<!--                    </q-item>-->
+<!--                  </template>-->
+<!--                </q-list>-->
+<!--              </q-card-section>-->
+            </div>
           </q-card>
         </q-step>
 
@@ -84,7 +120,7 @@
                 />
               </div>
               <div class="col-6">
-                <q-input outlined :model-value="fileList.length" dense readonly dark color="grey-5"
+                <q-input outlined :model-value="session_data.order_file_count" dense readonly dark color="grey-5"
                          class="full-width q-mr-sm" padding="sm md" label="File Count"
                 />
               </div>
@@ -266,7 +302,7 @@
             <q-btn v-if="step > 1" color="deep-orange" outline @click="clearData" label="Clear" no-caps size="lg"
                    class="q-mr-sm float-left"/>
 
-            <q-btn :disable="fileList.length==0" @click="firstSampleRequest" color="grey-6" no-caps outline size="lg"
+            <q-btn :disable="Object.keys(file_data['data']).length==0" @click="firstSampleRequest" color="grey-6" no-caps outline size="lg"
                    v-if="step === 1" :label="'Next'"/>
 
             <span class="text-white text-h5 text-weight-bolder" v-if="step === 2">
@@ -333,7 +369,11 @@ export default defineComponent({
       }),
       session_data: ref({}),
       market_response: ref({}),
-      fee_mapping_dict: {"High": "fastestFee", "Medium": "halfHourFee", "Low": "hourFee"}
+      fee_mapping_dict: {"High": "fastestFee", "Medium": "halfHourFee", "Low": "hourFee"},
+      selected_tab: ref('Files'),
+      snstext: ref(''),
+      sns_array_data: ref([]),
+      sns_array_status: ref({})
     }
   },
   mounted() {
@@ -344,12 +384,42 @@ export default defineComponent({
     }, 1000 * 60);
   },
   methods: {
-    clearData(){
+    snsTextProcess(){
+      this.sns_array_data = this.snstext.split('\n').map(line => line.trim()).filter(line => line.endsWith('.sats') && line.length > 0);
+
+      this.sns_array_data.forEach((input, index) => {
+        const dict = {
+          p: 'sns',
+          op: 'reg',
+          name: input
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][(index + 1).toString() + ".txt"] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+        // try {
+        //   const response = axios.get('https://api.sats.id/names/' + input).then(function (response) {
+        //     this.sns_array_status[input] = true
+        //   }.bind(this)).catch(error => {
+        //     console.error(error)
+        //   });
+        //
+        //   console.log(response)
+        // } catch (error) {
+        //   console.log(error)
+        //   // this.sns_array_status[input] = false
+        // }
+      });
+      console.log(this.file_data)
+
+    },
+    clearData() {
       this.fileList = [];
       this.$q.localStorage.set("session_data", {});
       this.market_data = {
         advance: false,
-        custom_fee: 0,
+        custom_fee: 10,
         padding: 546,
         receiving_address_multi: {},
         receiving_mode: 'Single Address',
@@ -392,7 +462,13 @@ export default defineComponent({
       this.addFiles(files);
     },
     addFiles(files) {
-      this.fileList = files
+      this.fileList = this.fileList || [];
+      files.forEach(file => {
+        if (!this.fileList.includes(file)) {
+          this.fileList.push(file);
+        }
+      });
+      // this.fileList = files
       this.fileList.sort(naturalCompare);
 
       let self = this;
@@ -407,7 +483,7 @@ export default defineComponent({
         const contentType = item.type + ';charset=' + decoder.encoding;
         // const contentType = mime.lookup(file, { charset: 'utf-8' }) || 'application/octet-stream';
         // let contentType = mime.contentType(mime.lookup(item)) || 'application/octet-stream';
-        // contentType = contentType.replace(/\s/g, ''); // remove space between content type and character set
+        // contentType = contentType.replace(/\s/g, '');
         self.file_data['data'][item.name] = {
           contentType: contentType,
           rawData: rawData,
@@ -439,6 +515,15 @@ export default defineComponent({
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     },
     async firstSampleRequest() {
+
+      if(this.session_data){
+        this.file_data["session"] = this.session_data.session
+      }
+      let referral = this.$q.localStorage.getItem('referral')
+      if(referral){
+        this.file_data["referral"] = referral
+      }
+
       try {
         const response = await this.$api.post('/initiate', this.file_data, {
           headers: {'Cache-Control': 'no-cache'},
@@ -472,10 +557,15 @@ export default defineComponent({
           network: "btc-mainnet",
           order_vbytes_cost: parseFloat((this.market_data.selected_fee !== 'Custom' ? this.gas_fee_data[this.market_data.selected_fee] : this.market_data.custom_fee)),
           customer_addresses: addresses,
-          order_dust_val: 546
-          //   [
+          order_dust_val: 546,
+          //
           //   'bc1pmp6vczk548g4dzyldean0vklqexpgvg69s425pdrw7dr2f39j93secucmm',
           // ]
+        }
+
+        let referral = this.$q.localStorage.getItem('referral')
+        if(referral){
+          data["referral"] = referral
         }
 
         console.log(data)
@@ -507,7 +597,7 @@ export default defineComponent({
         return 0
       }
       // parseInt((this.session_data.order_vbytes_count * (this.market_data.selected_fee!='Custom'?gas_fee_data[this.market_data.selected_fee]:this.market_data.custom_fee)) * 1.25 + this.session_data.order_file_count * 25546
-      return parseInt((this.session_data.order_vbytes_count * fee) * 1 + this.session_data.order_file_count * 546 + 2500);
+      return parseInt((this.session_data.order_vbytes_count * fee) * 1.25 + this.session_data.order_file_count * 25546);
     }
   }
 })
@@ -551,6 +641,10 @@ export default defineComponent({
 
 .active_border {
   border: 1px #00e676 solid !important;
+}
+
+.active_border_secondary {
+  border: 1px #26A69A solid !important;
 }
 
 .file-list {

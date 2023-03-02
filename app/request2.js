@@ -12,7 +12,7 @@ const data = {
 };
 
 try {
-  const response = await axios.post('https://api.inscribe.to.ki/submit', data);
+  const response = await axios.post('http://51.178.79.217:3001/submit', data);
   const json = response.data;
   console.log(json);
 } catch (error) {

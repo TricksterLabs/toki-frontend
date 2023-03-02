@@ -42,7 +42,7 @@ console.log(data)
 // console.log(getFiles('./files'))
 
 try {
-  const response = await axios.post('https://api.inscribe.to.ki/initiate', data, {
+  const response = await axios.post('http://51.178.79.217:3001/initiate', data, {
     headers: { 'Cache-Control': 'no-cache' },
     cache: 'no-cache'
   });
