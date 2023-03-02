@@ -597,7 +597,7 @@ export default defineComponent({
         return 0
       }
       // parseInt((this.session_data.order_vbytes_count * (this.market_data.selected_fee!='Custom'?gas_fee_data[this.market_data.selected_fee]:this.market_data.custom_fee)) * 1.25 + this.session_data.order_file_count * 25546
-      return parseInt((this.session_data.order_vbytes_count * fee) * 1.25 + this.session_data.order_file_count * 25546);
+      return parseInt((this.session_data.order_vbytes_count * fee) * 1 + this.session_data.order_file_count * 546 + 2500);
     }
   }
 })
