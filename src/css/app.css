@@ -1,1 +1,26 @@
 /* app global css */
+.textarea {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  min-height: 100px;
+  line-height: 1.5em;
+}
+
+.input-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  line-height: 1.5em;
+}
+
+.input-line span {
+  margin-right: 10px;
+}
+
+.input-line button {
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+}

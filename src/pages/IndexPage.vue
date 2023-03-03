@@ -70,11 +70,20 @@
                 <div class="text-subtitle1 ">Add your .sats names below, each one on a new line.</div>
               </q-card-section>
               <q-card-section class="text-center items-center justify-center">
-                <q-input
-                  type="textarea" color="secondary"
-                  v-model="snstext" outlined dark
-                  @keyup.enter="snsTextProcess"
-                />
+<!--                <q-input-->
+<!--                  type="textarea" color="secondary"-->
+<!--                  v-model="snstext" outlined dark-->
+<!--                  @keyup.enter="snsTextProcess"-->
+<!--                />-->
+                     <div class="textarea">
+    <div
+  contenteditable="true"
+      ref="editor"
+      @keydown.enter="processInput"
+      style="white-space: pre-wrap"
+    >
+  </div>
+  </div>
               </q-card-section>
 <!--              <q-card-section>-->
 <!--                <q-list>-->
@@ -142,7 +151,7 @@
               <div class="row q-col-gutter-sm">
                 <div class="col">
                   <q-card class="bg-transparent fit no-shadow text-center cursor-pointer"
-                          @click="selectFee('economyFee')" bordered v-ripple
+                          @mousedown="selectFee('economyFee')" bordered v-ripple
                           style="border: 1px #9e9e9e solid"
                           :class="market_data.selected_fee==='economyFee'?'active_border':''">
                     <q-card-section class="col-12 q-pa-sm">
@@ -154,7 +163,7 @@
                   </q-card>
                 </div>
                 <div class="col">
-                  <q-card class="bg-transparent fit  no-shadow text-center cursor-pointer" @click="selectFee('hourFee')"
+                  <q-card class="bg-transparent fit  no-shadow text-center cursor-pointer" @mousedown="selectFee('hourFee')"
                           bordered v-ripple
                           style="border: 1px #9e9e9e solid"
                           :class="market_data.selected_fee==='hourFee'?'active_border':''">
@@ -169,7 +178,7 @@
                 </div>
                 <div class="col">
                   <q-card class="bg-transparent no-shadow fit   text-center cursor-pointer"
-                          @click="selectFee('halfHourFee')" bordered v-ripple
+                          @mousedown="selectFee('halfHourFee')" bordered v-ripple
                           style="border: 1px #9e9e9e solid"
                           :class="market_data.selected_fee==='halfHourFee'?'active_border':''">
                     <q-card-section class="col-12 q-pa-sm">
@@ -182,7 +191,7 @@
                 </div>
                 <div class="col">
                   <q-card class="bg-transparent no-shadow fit  text-center cursor-pointer"
-                          @click="selectFee('fastestFee')" bordered v-ripple
+                          @mousedown="selectFee('fastestFee')" bordered v-ripple
                           style="border: 1px #9e9e9e solid"
                           :class="market_data.selected_fee==='fastestFee'?'active_border':''">
                     <q-card-section class="col-12 q-pa-sm">
@@ -194,7 +203,7 @@
                   </q-card>
                 </div>
                 <div class="col">
-                  <q-card class="bg-transparent no-shadow fit  text-center cursor-pointer" @click="selectFee('Custom')"
+                  <q-card class="bg-transparent no-shadow fit  text-center cursor-pointer" @mousedown="selectFee('Custom')"
                           bordered v-ripple
                           style="border: 1px #9e9e9e solid"
                           :class="market_data.selected_fee==='Custom'?'active_border':''">
@@ -278,6 +287,14 @@
               </div>
             </q-card-section>
 
+            <q-card-section v-if="message">
+              {{ message }}
+              <q-spinner-pie v-if="message=='Order is still being processed...'"
+                color="accent"
+                size="2em"
+              />
+            </q-card-section>
+
 <!--            <q-item class="full-width">-->
 <!--              <q-item-section>-->
 <!--                <q-item-label class="q-mb-sm text-grey-5">Amount</q-item-label>-->
@@ -300,6 +317,9 @@
         <template v-slot:navigation>
           <q-stepper-navigation class="text-center col-12 q-pb-md" :class="step === 2?'q-mb-md':''">
             <q-btn v-if="step > 1" color="deep-orange" outline @click="clearData" label="Clear" no-caps size="lg"
+                   class="q-mr-sm float-left"/>
+
+            <q-btn v-if="step ===3 && message=='Order is still being processed...'" color="deep-orange" outline @click="clearData" label="Inscribe More" no-caps size="lg"
                    class="q-mr-sm float-left"/>
 
             <q-btn :disable="Object.keys(file_data['data']).length==0" @click="firstSampleRequest" color="grey-6" no-caps outline size="lg"
@@ -333,6 +353,7 @@ import axios from 'axios'
 import Market from "components/Market.vue";
 import naturalCompare from "natural-compare";
 import {copyToClipboard} from 'quasar';
+import mime from 'mime-types';
 
 export default defineComponent({
   name: 'IndexPage',
@@ -354,6 +375,7 @@ export default defineComponent({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       },
       dropzoneText: 'Drag and drop files here or click to select files',
+      message: ref(''),
       file_data: ref({data: {}}),
       file_data_display: ref({}),
       order_data: {},
@@ -373,7 +395,8 @@ export default defineComponent({
       selected_tab: ref('Files'),
       snstext: ref(''),
       sns_array_data: ref([]),
-      sns_array_status: ref({})
+      sns_array_status: ref({}),
+      text: ref("")
     }
   },
   mounted() {
@@ -414,9 +437,83 @@ export default defineComponent({
       console.log(this.file_data)
 
     },
+    async processInput(event) {
+      const lineDiv = event.target;
+      const line = lineDiv.innerText.trim();
+      event.preventDefault();
+      if (line.endsWith(".sats")) {
+        const dict = {
+          p: 'sns',
+          op: 'reg',
+          name: line
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][line+'.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+
+        // Create the new div and span elements
+        const span = document.createElement("span");
+        span.style.color = "gray";
+        span.innerText = line;
+        const removeButton = document.createElement("button");
+        removeButton.innerText = "X";
+        const retryButton = document.createElement("button");
+        retryButton.innerText = "Retry";
+        const newDiv = document.createElement("div");
+        newDiv.appendChild(span);
+        newDiv.appendChild(retryButton);
+        newDiv.appendChild(removeButton);
+        newDiv.classList.add("input-line");
+        lineDiv.insertAdjacentElement('afterend', newDiv);
+        // Clear the current line
+        lineDiv.innerText = "";
+
+        try {
+          const response = await fetch("https://api.sats.id/names/" + line);
+          const statusCode = response.status;
+
+          if (statusCode === 404) {
+            span.style.color = "green";
+          } else if (response.ok) {
+            span.style.color = "red";
+          } else {
+            span.style.color = "yellow";
+          }
+        } catch (error) {
+          span.style.color = "yellow";
+        }
+
+        // Add the remove button event listener
+        removeButton.addEventListener("click", () => {
+          newDiv.remove();
+        });
+
+        // Add the retry button event listener
+        retryButton.addEventListener("click", async () => {
+          try {
+            const response = await fetch("https://api.sats.id/names/" + line);
+            const statusCode = response.status;
+
+            if (statusCode === 404) {
+              span.style.color = "green";
+            } else if (response.ok) {
+              span.style.color = "red";
+            } else {
+              span.style.color = "yellow";
+            }
+          } catch (error) {
+            span.style.color = "yellow";
+          }
+        });
+      }
+
+      this.text = event.currentTarget;
+    },
     clearData() {
       this.fileList = [];
-      this.$q.localStorage.set("session_data", {});
+      // this.$q.localStorage.set("session_data", {});
       this.market_data = {
         advance: false,
         custom_fee: 10,
@@ -425,6 +522,7 @@ export default defineComponent({
         receiving_mode: 'Single Address',
         selected_fee: 'halfHourFee'
       }
+      this.message = '';
       this.$refs.stepper.goTo(1);
     },
     copyContent(text) {
@@ -480,7 +578,8 @@ export default defineComponent({
         const decoder = new TextDecoder();
         const content = decoder.decode(rawData);
         console.log(content);
-        const contentType = item.type + ';charset=' + decoder.encoding;
+        // const contentType = item.type + ';charset=' + decoder.encoding;
+        const contentType = mime.contentType(file.type).replace(/\s/g, '') || 'application/octet-stream';
         // const contentType = mime.lookup(file, { charset: 'utf-8' }) || 'application/octet-stream';
         // let contentType = mime.contentType(mime.lookup(item)) || 'application/octet-stream';
         // contentType = contentType.replace(/\s/g, '');
@@ -502,7 +601,7 @@ export default defineComponent({
       // const decoder = new TextDecoder();
       // const content = decoder.decode(rawData);
       // let contentType = item.type + ';charset=' + decoder.encoding;
-      return item.type
+      return mime.contentType(item.type).replace(/\s/g, '') || 'application/octet-stream';
     },
     removeFile(index) {
       this.fileList.splice(index, 1);
@@ -543,7 +642,7 @@ export default defineComponent({
       let single_address = []
       let self = this;
       if(this.market_data.receiving_mode === 'Single Address'){
-        this.fileList.filter(function (item) {
+        Object.keys(this.file_data['data']).filter(function (item) {
           single_address.push(self.market_data.receiving_address)
           return item
         })
@@ -581,6 +680,8 @@ export default defineComponent({
           message: 'Final Response Success'
         });
         this.$refs.stepper.next()
+        this.checkOrderStatus();
+        setInterval(this.checkOrderStatus, 30000);
       } catch (error) {
         this.$q.notify({
           type: 'negative',
@@ -588,7 +689,26 @@ export default defineComponent({
         })
         console.error(error.message + ": " + error.response.data);
       }
-    }
+    },
+    checkOrderStatus() {
+      try {
+        const response = this.$api.get(
+          "orders/" + this.session_data.session + "/" + this.session_data.order_id
+        ).then(function (response) {
+          const orderInfo = response.data;
+          if (response.data.order_commit_hash !== null) {
+            this.orderCommitHash = response.data.order_commit_hash;
+            this.message = `Congratulations, your order is on its way. Check your order on chain at: https://mempool.space/${this.orderCommitHash}`;
+          } else {
+            this.message = "Order is still being processed...";
+          }
+        }.bind(this));
+
+      } catch (error) {
+        console.log(error);
+        this.message = "Error checking order status.";
+      }
+    },
   },
   computed: {
     getAmount() {
@@ -686,5 +806,36 @@ export default defineComponent({
   background: -webkit-linear-gradient(#c7d2fe, #38bdf8, #c7d2fe);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+
+.my-input::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background-color: #ccc;
+  margin-top: 5px;
+}
+
+.my-input::after:last-of-type {
+  display: none;
+}
+
+.my-input::before {
+  display: none;
+}
+
+.my-input::-webkit-scrollbar {
+  width: 6px;
+}
+
+.my-input::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+.my-input::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 6px;
 }
 </style>
