@@ -20,13 +20,15 @@
           <q-card class="bg-transparent no-shadow" style="height: 28rem;"
                   :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
             <q-card-section class="q-pa-none text-center">
-              <q-btn @click="selected_tab='Files'" :class="selected_tab=='Files'?'active_item':''" color="grey-6" no-caps outline size="lg" :label="'Files'"/>
-              <q-btn @click="selected_tab='Sns'" :class="selected_tab=='Sns'?'active_item':''" class="q-ml-md" color="grey-6" no-caps outline size="lg" :label="'Sns'"/>
+              <q-btn @click="selectTab('Files')" :class="selected_tab=='Files'?'active_item':''" color="grey-6" no-caps
+                     outline size="lg" :label="'Files'"/>
+              <q-btn @click="selectTab('Sns')" :class="selected_tab=='Sns'?'active_item':''" class="q-ml-md"
+                     color="grey-6" no-caps outline size="lg" :label="'Sns'"/>
             </q-card-section>
 
             <div v-if="selected_tab=='Files'">
               <q-card-section class="q-pb-none">
-                <div class="text-subtitle1 ">Upload your files to begin, we will inscribe and send them to you:</div>
+                <div class="text-subtitle1 ">Upload any file type up to 400KB and total file size of up to 100MB.</div>
               </q-card-section>
               <q-card-section class="text-center items-center justify-center">
                 <q-uploader class="dropzone no-shadow" ref="file"
@@ -70,36 +72,36 @@
                 <div class="text-subtitle1 ">Add your .sats names below, each one on a new line.</div>
               </q-card-section>
               <q-card-section class="text-center items-center justify-center">
-<!--                <q-input-->
-<!--                  type="textarea" color="secondary"-->
-<!--                  v-model="snstext" outlined dark-->
-<!--                  @keyup.enter="snsTextProcess"-->
-<!--                />-->
-                     <div class="textarea">
-    <div
-  contenteditable="true"
-      ref="editor"
-      @keydown.enter="processInput"
-      style="white-space: pre-wrap"
-    >
-  </div>
-  </div>
+                <!--                <q-input-->
+                <!--                  type="textarea" color="secondary"-->
+                <!--                  v-model="snstext" outlined dark-->
+                <!--                  @keyup.enter="snsTextProcess"-->
+                <!--                />-->
+                <div class="textarea">
+                  <div
+                    contenteditable="true"
+                    ref="editor"
+                    @keydown.enter="processInput"
+                    style="white-space: pre-wrap"
+                  >
+                  </div>
+                </div>
               </q-card-section>
-<!--              <q-card-section>-->
-<!--                <q-list>-->
-<!--                  <q-item-label header class="text-white text-subtitle1">Items</q-item-label>-->
-<!--                  <template v-for="(item, item_index) in sns_array_data">-->
-<!--                    <q-item class="rounded-borders bg-transparent q-my-sm active_border_secondary">-->
-<!--                      <q-item-section side class="text-white">-->
-<!--                        {{ item_index + 1 }}-->
-<!--                      </q-item-section>-->
-<!--                      <q-item-section :class="sns_array_status.hasOwnProperty(item)?'text-positive text-wright-bolder':''">-->
-<!--                        {{ item }}-->
-<!--                      </q-item-section>-->
-<!--                    </q-item>-->
-<!--                  </template>-->
-<!--                </q-list>-->
-<!--              </q-card-section>-->
+              <!--              <q-card-section>-->
+              <!--                <q-list>-->
+              <!--                  <q-item-label header class="text-white text-subtitle1">Items</q-item-label>-->
+              <!--                  <template v-for="(item, item_index) in sns_array_data">-->
+              <!--                    <q-item class="rounded-borders bg-transparent q-my-sm active_border_secondary">-->
+              <!--                      <q-item-section side class="text-white">-->
+              <!--                        {{ item_index + 1 }}-->
+              <!--                      </q-item-section>-->
+              <!--                      <q-item-section :class="sns_array_status.hasOwnProperty(item)?'text-positive text-wright-bolder':''">-->
+              <!--                        {{ item }}-->
+              <!--                      </q-item-section>-->
+              <!--                    </q-item>-->
+              <!--                  </template>-->
+              <!--                </q-list>-->
+              <!--              </q-card-section>-->
             </div>
           </q-card>
         </q-step>
@@ -163,7 +165,8 @@
                   </q-card>
                 </div>
                 <div class="col">
-                  <q-card class="bg-transparent fit  no-shadow text-center cursor-pointer" @mousedown="selectFee('hourFee')"
+                  <q-card class="bg-transparent fit  no-shadow text-center cursor-pointer"
+                          @mousedown="selectFee('hourFee')"
                           bordered v-ripple
                           style="border: 1px #9e9e9e solid"
                           :class="market_data.selected_fee==='hourFee'?'active_border':''">
@@ -203,7 +206,8 @@
                   </q-card>
                 </div>
                 <div class="col">
-                  <q-card class="bg-transparent no-shadow fit  text-center cursor-pointer" @mousedown="selectFee('Custom')"
+                  <q-card class="bg-transparent no-shadow fit  text-center cursor-pointer"
+                          @mousedown="selectFee('Custom')"
                           bordered v-ripple
                           style="border: 1px #9e9e9e solid"
                           :class="market_data.selected_fee==='Custom'?'active_border':''">
@@ -212,7 +216,12 @@
                       <q-input input-class="text-center" type="text" hide-bottom-space outlined
                                v-model="market_data.custom_fee" dense dark color="grey-5"
                                class="" padding="sm md" min="1" max="50"
-                               :rules="[ val => val<50 || 'Please select vlue between 1 and 50']"
+                               :rules="[
+                                (v) => !!v || 'Amount is required',
+                                (v) => /^\d+(\.\d{1,2})?$/.test(v) || 'Amount should have at most 2 decimal points',
+                                (v) => parseFloat(v) > 1 || 'Amount should be above 1',
+                                (v) => parseFloat(v) < 50 || 'Amount should be below 50',
+                              ]"
                       />
                     </q-card-section>
                   </q-card>
@@ -226,7 +235,8 @@
                            label="Single Address"/>
                 </div>
                 <div class="col-6">
-                  <q-radio color="accent" dark v-model="market_data.receiving_mode" val="Multi Address" label="Multi Address"/>
+                  <q-radio color="accent" dark v-model="market_data.receiving_mode" val="Multi Address"
+                           label="Multi Address"/>
                 </div>
               </div>
               <div v-if="market_data.receiving_mode==='Single Address'">
@@ -242,11 +252,11 @@
                 </template>
               </div>
             </q-card-section>
-<!--            <q-card-section class="text-center">-->
-<!--              <div class="text-white text-h5 text-weight-bolder">-->
-<!--                Final Amount - {{ getAmount }}-->
-<!--              </div>-->
-<!--            </q-card-section>-->
+            <!--            <q-card-section class="text-center">-->
+            <!--              <div class="text-white text-h5 text-weight-bolder">-->
+            <!--                Final Amount - {{ getAmount }}-->
+            <!--              </div>-->
+            <!--            </q-card-section>-->
           </q-card>
         </q-step>
 
@@ -271,18 +281,21 @@
 
               <div class="col-12 q-mt-md">
                 <q-input outlined v-model="market_response.serviceAddress" readonly dense dark input-class=""
-                         class="q-mr-sm" padding="sm md" @click="copyContent(market_response.serviceAddress)" label="Bitcoin Address" color="accent"
+                         class="q-mr-sm" padding="sm md" @click="copyContent(market_response.serviceAddress)"
+                         label="Bitcoin Address" color="accent"
                 >
                 </q-input>
               </div>
               <div class="col-6 q-mt-md">
                 <q-input outlined :model-value="market_response.amount/100000000" dense readonly dark color="grey-5"
                          class="full-width-right" padding="sm md" label="Amount (BTC)"
+                         @click="copyContent(market_response.amount/100000000)"
                 />
               </div>
               <div class="col-6 q-mt-md">
                 <q-input outlined :model-value="market_response.amount" dense readonly dark color="grey-5"
                          class="full-width q-mr-sm" padding="sm md" label="Amount (Satoshi)"
+                         @click="copyContent(market_response.amount)"
                 />
               </div>
             </q-card-section>
@@ -290,39 +303,41 @@
             <q-card-section v-if="message">
               {{ message }}
               <q-spinner-pie v-if="message=='Order is still being processed...'"
-                color="accent"
-                size="2em"
+                             color="accent"
+                             size="2em"
               />
             </q-card-section>
 
-<!--            <q-item class="full-width">-->
-<!--              <q-item-section>-->
-<!--                <q-item-label class="q-mb-sm text-grey-5">Amount</q-item-label>-->
-<!--                <q-input outlined :model-value="getAmount" readonly dense dark color="grey-5"-->
-<!--                         class="float-right q-mr-sm" padding="sm md"-->
-<!--                >-->
-<!--                  <template v-slot:after>-->
-<!--                    <q-btn round dense flat icon="content_copy" @click="copyContent(getAmount)">-->
-<!--                      <q-tooltip>-->
-<!--                        Copy Amount-->
-<!--                      </q-tooltip>-->
-<!--                    </q-btn>-->
-<!--                  </template>-->
-<!--                </q-input>-->
-<!--              </q-item-section>-->
-<!--            </q-item>-->
+            <!--            <q-item class="full-width">-->
+            <!--              <q-item-section>-->
+            <!--                <q-item-label class="q-mb-sm text-grey-5">Amount</q-item-label>-->
+            <!--                <q-input outlined :model-value="getAmount" readonly dense dark color="grey-5"-->
+            <!--                         class="float-right q-mr-sm" padding="sm md"-->
+            <!--                >-->
+            <!--                  <template v-slot:after>-->
+            <!--                    <q-btn round dense flat icon="content_copy" @click="copyContent(getAmount)">-->
+            <!--                      <q-tooltip>-->
+            <!--                        Copy Amount-->
+            <!--                      </q-tooltip>-->
+            <!--                    </q-btn>-->
+            <!--                  </template>-->
+            <!--                </q-input>-->
+            <!--              </q-item-section>-->
+            <!--            </q-item>-->
           </q-card>
         </q-step>
 
         <template v-slot:navigation>
           <q-stepper-navigation class="text-center col-12 q-pb-md" :class="step === 2?'q-mb-md':''">
-            <q-btn v-if="step > 1" color="deep-orange" outline @click="clearData" label="Clear" no-caps size="lg"
+            <q-btn v-if="step > 1 && step!=3" color="deep-orange" outline @click="clearData" label="Clear" no-caps size="lg"
                    class="q-mr-sm float-left"/>
 
-            <q-btn v-if="step ===3 && message=='Order is still being processed...'" color="deep-orange" outline @click="clearData" label="Inscribe More" no-caps size="lg"
-                   class="q-mr-sm float-left"/>
+            <q-btn v-if="step ===3 && message=='Order is still being processed...'" color="deep-orange" outline
+                   @click="clearData" label="Inscribe More" no-caps size="lg"
+                   class="q-mr-sm float-left q-mb-md"/>
 
-            <q-btn :disable="Object.keys(file_data['data']).length==0" @click="firstSampleRequest" color="grey-6" no-caps outline size="lg"
+            <q-btn :disable="Object.keys(file_data['data']).length==0" @click="firstSampleRequest" color="grey-6"
+                   no-caps outline size="lg"
                    v-if="step === 1" :label="'Next'"/>
 
             <span class="text-white text-h5 text-weight-bolder" v-if="step === 2">
@@ -335,9 +350,9 @@
               @click="makeTransaction" color="grey-6" no-caps outline size="lg"
               v-if="step === 2" :label="'Next'" class="float-right"/>
 
-            <q-btn :disable="fileList.length==0"  class="float-right q-mb-md"
-              @click=""  color="grey-6" no-caps outline size="lg"
-                   v-if="step === 3" :label="'Finish'"/>
+<!--            <q-btn :disable="fileList.length==0" class="float-right q-mb-md"-->
+<!--                   @click="" color="grey-6" no-caps outline size="lg"-->
+<!--                   v-if="step === 3" :label="'Finish'"/>-->
           </q-stepper-navigation>
         </template>
       </q-stepper>
@@ -407,7 +422,12 @@ export default defineComponent({
     }, 1000 * 60);
   },
   methods: {
-    snsTextProcess(){
+    selectTab(tab) {
+      this.fileList = [];
+      this.file_data['data'] = {};
+      this.selected_tab = tab
+    },
+    snsTextProcess() {
       this.sns_array_data = this.snstext.split('\n').map(line => line.trim()).filter(line => line.endsWith('.sats') && line.length > 0);
 
       this.sns_array_data.forEach((input, index) => {
@@ -448,7 +468,7 @@ export default defineComponent({
           name: line
         };
         const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][line+'.txt'] = {
+        this.file_data['data'][line + '.txt'] = {
           contentType: 'text/plain;charset=utf-8',
           rawData: rawData,
         };
@@ -523,6 +543,7 @@ export default defineComponent({
         selected_fee: 'halfHourFee'
       }
       this.message = '';
+      this.file_data['data'] = {}
       this.$refs.stepper.goTo(1);
     },
     copyContent(text) {
@@ -538,12 +559,15 @@ export default defineComponent({
         })
     },
     getGasFeeData() {
+      this.$q.loading.show();
       try {
         const response = axios.get('https://mempool.space/api/v1/fees/recommended').then(function (response) {
           this.gas_fee_data = response.data;
+          this.$q.loading.hide();
         }.bind(this));
       } catch (error) {
         console.error(error);
+        this.$q.loading.hide();
       }
     },
     selectFee(item) {
@@ -615,15 +639,16 @@ export default defineComponent({
     },
     async firstSampleRequest() {
 
-      if(this.session_data){
+      if (this.session_data) {
         this.file_data["session"] = this.session_data.session
       }
       let referral = this.$q.localStorage.getItem('referral')
-      if(referral){
+      if (referral) {
         this.file_data["referral"] = referral
       }
 
       try {
+        this.$q.loading.show();
         const response = await this.$api.post('/initiate', this.file_data, {
           headers: {'Cache-Control': 'no-cache'},
           cache: 'no-cache'
@@ -633,15 +658,17 @@ export default defineComponent({
         this.$q.localStorage.set("session_data", response.data)
         this.session_data = this.$q.localStorage.getItem("session_data")
         console.log(json);
-        this.$refs.stepper.next()
+        this.$refs.stepper.next();
+        this.$q.loading.hide();
       } catch (error) {
         console.error(error.message + ": " + error.response.data);
+        this.$q.loading.hide();
       }
     },
     async makeTransaction() {
       let single_address = []
       let self = this;
-      if(this.market_data.receiving_mode === 'Single Address'){
+      if (this.market_data.receiving_mode === 'Single Address') {
         Object.keys(this.file_data['data']).filter(function (item) {
           single_address.push(self.market_data.receiving_address)
           return item
@@ -663,11 +690,12 @@ export default defineComponent({
         }
 
         let referral = this.$q.localStorage.getItem('referral')
-        if(referral){
+        if (referral) {
           data["referral"] = referral
         }
 
         console.log(data)
+        this.$q.loading.show();
         const response = await this.$api.post('/submit', data, {
           headers: {'Cache-Control': 'no-cache'},
           cache: 'no-cache'
@@ -680,6 +708,7 @@ export default defineComponent({
           message: 'Final Response Success'
         });
         this.$refs.stepper.next()
+        this.$q.loading.hide();
         this.checkOrderStatus();
         setInterval(this.checkOrderStatus, 30000);
       } catch (error) {
@@ -692,6 +721,7 @@ export default defineComponent({
     },
     checkOrderStatus() {
       try {
+        this.$q.loading.show();
         const response = this.$api.get(
           "orders/" + this.session_data.session + "/" + this.session_data.order_id
         ).then(function (response) {
@@ -702,11 +732,13 @@ export default defineComponent({
           } else {
             this.message = "Order is still being processed...";
           }
+          this.$q.loading.hide();
         }.bind(this));
 
       } catch (error) {
         console.log(error);
         this.message = "Error checking order status.";
+        this.$q.loading.hide();
       }
     },
   },
@@ -717,7 +749,7 @@ export default defineComponent({
         return 0
       }
       // parseInt((this.session_data.order_vbytes_count * (this.market_data.selected_fee!='Custom'?gas_fee_data[this.market_data.selected_fee]:this.market_data.custom_fee)) * 1.25 + this.session_data.order_file_count * 25546
-      return parseInt((this.session_data.order_vbytes_count * fee) * 1 + this.session_data.order_file_count * 546 + 2500);
+      return parseInt((this.session_data.order_vbytes_count * fee) * 1.25 + this.session_data.order_file_count * 25546);
     }
   }
 })
@@ -802,7 +834,7 @@ export default defineComponent({
   width: 4px;
 }
 
-.final_amount_class{
+.final_amount_class {
   background: -webkit-linear-gradient(#c7d2fe, #38bdf8, #c7d2fe);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

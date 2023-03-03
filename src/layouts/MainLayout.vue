@@ -2,14 +2,23 @@
   <q-layout view="lHh Lpr lFf">
     <q-header class="" style="background: linear-gradient(to right, #202D2E, #303428)">
       <q-toolbar>
-        <q-toolbar-title>
-          ToKi
+        <q-toolbar-title class="text-center">
+          <img src="~assets/toki_02.png" height="30" class="float-left">
+
+          <q-btn label="Inscribe" :to="'/'" flat no-caps></q-btn>
+          <q-btn label="Market" :to="'/market'" class="q-ml-sm" disable flat no-caps>
+            <q-tooltip>
+              Coming Soon
+            </q-tooltip>
+          </q-btn>
+          <q-btn label="Wallet" :to="'/market'" class="q-ml-sm" flat disable no-caps>
+            <q-tooltip>
+              Coming Soon
+            </q-tooltip>
+          </q-btn>
         </q-toolbar-title>
 
         <div>
-          <q-btn label="Inscribe" :to="'/'" flat no-caps></q-btn>
-          <q-btn label="Market" :to="'/market'" class="q-ml-sm" flat no-caps></q-btn>
-          <q-btn label="Orders" @click="getOrderData" class="q-ml-sm float-right" flat no-caps></q-btn>
         </div>
       </q-toolbar>
     </q-header>
@@ -40,10 +49,14 @@
 
     <q-footer style="background: linear-gradient(to right, #202D2E, #303428)">
       <q-card class="no-shadow bg-transparent no-border">
-        <q-card-section class="text-center q-pa-sm">
-          ToKi &copy; All Credits Reserved
-
-          <q-btn label="Faq" @click="faq=true" class="q-ml-sm float-right" flat no-caps></q-btn>
+        <q-card-section class="text-center q-pa-none">
+          <a style="text-decoration: none" class="cursor-pointer text-weight-medium">Terms & Conditions</a>
+          <a style="text-decoration: none" class="q-ml-sm cursor-pointer text-weight-medium">Privacy Policy</a>
+          <a style="text-decoration: none" @click="faq=true" class="q-ml-sm cursor-pointer text-weight-medium">Faq</a>
+          <a style="text-decoration: none" @click="getOrderData" class="q-ml-sm cursor-pointer text-weight-medium">Orders</a>
+        </q-card-section>
+        <q-card-section class="text-center q-pa-sm text-weight-bolder">
+          ToKi @ All Credits Reserved
         </q-card-section>
       </q-card>
     </q-footer>
