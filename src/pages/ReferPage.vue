@@ -25,14 +25,9 @@ export default defineComponent({
     }
   },
   mounted() {
-    let referral = this.$q.localStorage.getItem('referral')
-    if(!referral){
-      this.$q.localStorage.set("referral", this.$route.params.address);
-      this.$router.push('/')
-    }
-    else{
-      this.$router.push('/')
-    }
+    // let referral = this.$q.localStorage.getItem('referral')
+    this.$q.localStorage.set("referral", this.$route.params.address);
+    this.$router.push('/');
     // console.log(this.$route.params.address)
   }
 })

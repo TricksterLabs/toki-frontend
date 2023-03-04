@@ -54,6 +54,8 @@
           <a style="text-decoration: none" class="q-ml-sm cursor-pointer text-weight-medium">Privacy Policy</a>
           <a style="text-decoration: none" @click="faq=true" class="q-ml-sm cursor-pointer text-weight-medium">Faq</a>
           <a style="text-decoration: none" @click="getOrderData" class="q-ml-sm cursor-pointer text-weight-medium">Orders</a>
+          <a style="text-decoration: none" @click="load_session=true" class="q-ml-sm cursor-pointer text-weight-medium">Load
+            Session</a>
         </q-card-section>
         <q-card-section class="text-center q-pa-sm text-weight-bolder">
           ToKi @ All Credits Reserved
@@ -63,7 +65,7 @@
   </q-layout>
 
   <q-dialog no-backdrop-dismiss
-    v-model="faq"
+            v-model="faq"
   >
     <q-card dark class="no-shadow dialog_card_style"
             style="width: 700px; max-width: 80vw;background: linear-gradient(to right, #202D2E, #303428)">
@@ -96,21 +98,35 @@
           coins to Lightning like boltz.exchange or fixedfloat.com
         </div>
 
+        <div class="text-subtitle1 q-mt-md">
+            <q-btn label="Create Referral" @click="referral=true" no-caps dense color="primary"></q-btn>
+        </div>
+
+        <div v-if="referral" class="q-mt-md">
+          <q-input outlined v-model="referral_address" dense dark color="grey-5"
+                   class="full-width-right" padding="sm md" label="Address"
+          />
+        </div>
+
       </q-card-section>
 
       <q-card-section class="col-12 text-teal">
         <q-btn label="OK" class="float-right q-mb-md" outline v-close-popup/>
+        <q-btn label="Referral" v-if="referral" @click="tweet" :disable="!referral_address" class="float-right q-mb-md q-mr-sm" outline  no-caps v-close-popup/>
       </q-card-section>
     </q-card>
   </q-dialog>
 
   <q-dialog no-backdrop-dismiss
-    v-model="orders"
+            v-model="orders"
   >
     <q-card dark class="no-shadow dialog_card_style"
             style="width: 700px; max-width: 80vw;background: linear-gradient(to right, #202D2E, #303428)">
-      <q-card-section>
-        <div class="text-h6">Orders</div>
+      <q-card-section class="col-12">
+        <div class="text-h6">
+          Orders
+          <q-btn icon="close" class="float-right" flat rounded dense v-close-popup></q-btn>
+        </div>
       </q-card-section>
       <q-separator color="secondary"></q-separator>
       <q-card-section class="">
@@ -167,6 +183,30 @@
       </q-card-section>
     </q-card>
   </q-dialog>
+
+  <q-dialog no-backdrop-dismiss
+            v-model="load_session"
+  >
+    <q-card dark class="no-shadow dialog_card_style"
+            style="width: 500px; max-width: 80vw;background: linear-gradient(to right, #202D2E, #303428)">
+      <q-card-section class="col-12">
+        <div class="text-h6">Load Session
+
+          <q-btn icon="close" class="float-right" flat rounded dense v-close-popup></q-btn>
+        </div>
+      </q-card-section>
+      <q-separator color="secondary"></q-separator>
+      <q-card-section class="">
+        <q-input outlined v-model="session" dense dark color="grey-5"
+                 class="full-width-right" padding="sm md" label="Session"
+        />
+      </q-card-section>
+
+      <q-card-section class="col-12 text-teal">
+        <q-btn label="OK" :disable="!session" @click="loadSession" class="float-right q-mb-md" outline/>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -196,7 +236,11 @@ export default defineComponent({
       leftDrawerOpen,
       faq: ref(false),
       orders: ref(false),
-      orders_data:ref([]),
+      load_session: ref(false),
+      referral: ref(false),
+      session: ref(""),
+      referral_address: ref(""),
+      orders_data: ref([]),
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
@@ -206,14 +250,21 @@ export default defineComponent({
   mounted() {
     this.session_data = this.$q.localStorage.getItem("session_data");
   },
-  methods:{
+  methods: {
+    tweet() {
+      const tweetMessage = `To.Ki is a new inscription service. https://to.ki/inscribe/ref/${this.referral_address}`;
+      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        tweetMessage
+      )}`;
+      window.open(tweetUrl);
+    },
     getOrderData() {
       try {
-          this.$q.loading.show({
+        this.$q.loading.show({
           message: 'Fetching Orders data. Hang on...'
         })
 
-        const response = axios.get('https://api.inscribe.to.ki/orders/'+this.session_data.session).then(function (response) {
+        const response = axios.get('https://api.inscribe.to.ki/orders/' + this.session_data).then(function (response) {
           this.orders_data = response.data;
           this.orders_data.sort((a, b) => b.order_id - a.order_id);
           this.orders = true
@@ -221,9 +272,21 @@ export default defineComponent({
         }.bind(this));
       } catch (error) {
         console.error(error);
-          this.$q.loading.hide();
+        this.$q.loading.hide();
       }
     },
+    loadSession() {
+      this.$q.localStorage.set("session_data", this.session);
+      this.session_data = this.session;
+      this.session = '';
+
+      this.$q.notify({
+        type: 'positive',
+        message: 'Session Loaded Successfully'
+      });
+      this.load_session = false;
+
+    }
   }
 })
 </script>

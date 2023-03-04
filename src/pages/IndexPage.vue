@@ -17,7 +17,7 @@
           icon="inventory_2"
           :done="step > 1"
         >
-          <q-card class="bg-transparent no-shadow" style="height: 28rem;"
+          <q-card class="bg-transparent no-shadow" style="height: 27rem;"
                   :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
             <q-card-section class="q-pa-none text-center">
               <q-btn @click="selectTab('Files')" :class="selected_tab=='Files'?'active_item':''" color="grey-6" no-caps
@@ -86,6 +86,15 @@
                   >
                   </div>
                 </div>
+
+                <div>
+                  <q-badge color="green" rounded class="q-mr-sm"/>
+                  Domain is Free
+                  <q-badge color="red" rounded class="q-ml-md"/>
+                  <span class="q-ml-sm">Domain is Taken</span>
+                  <q-badge color="yellow" rounded class="q-ml-md"/>
+                  <span class="q-ml-sm">Could not retrieve data</span>
+                </div>
               </q-card-section>
               <!--              <q-card-section>-->
               <!--                <q-list>-->
@@ -112,16 +121,19 @@
           icon="info"
           :done="step > 2" class=""
         >
-          <q-card class="bg-transparent no-shadow" style="height: 28rem;"
+          <q-card class="bg-transparent no-shadow" style="height: 27rem;"
                   :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
-            <q-card-section class="row q-col-gutter-sm">
+            <q-card-section class="row q-col-gutter-sm q-pt-none">
+              <div class="col-12 text-center text-subtitle1">
+                Info
+              </div>
               <div class="col-6">
-                <q-input outlined v-model="session_data.session" dense readonly dark color="grey-5"
+                <q-input outlined v-model="session_data" dense readonly dark color="grey-5"
                          class="full-width-right" padding="sm md" label="Session"
                 />
               </div>
               <div class="col-6">
-                <q-input outlined v-model="session_data.order_id" dense readonly dark color="grey-5"
+                <q-input outlined v-model="order_data.order_id" dense readonly dark color="grey-5"
                          class="full-width q-mr-sm" padding="sm md" label="Order Id"
                 />
               </div>
@@ -131,12 +143,12 @@
                 />
               </div>
               <div class="col-6">
-                <q-input outlined :model-value="session_data.order_file_count" dense readonly dark color="grey-5"
+                <q-input outlined :model-value="order_data.order_file_count" dense readonly dark color="grey-5"
                          class="full-width q-mr-sm" padding="sm md" label="File Count"
                 />
               </div>
               <div class="col-6">
-                <q-input outlined :model-value="session_data.order_transaction_type" dense readonly dark color="grey-5"
+                <q-input outlined :model-value="order_data.order_transaction_type" dense readonly dark color="grey-5"
                          class="full-width-right" padding="sm md" input-class="text-capitalize" label="Transaction Type"
                 />
               </div>
@@ -147,7 +159,7 @@
               </div>
             </q-card-section>
             <q-card-section v-if="!market_data.advance" class="q-pt-none">
-              <div class="text-subtitle1 ">
+              <div class="text-subtitle1 text-center">
                 Gas Fee
               </div>
               <div class="row q-col-gutter-sm">
@@ -231,12 +243,15 @@
             <q-card-section class="q-pt-none">
               <div class="row q-col-gutter-sm">
                 <div class="col-6">
-                  <q-radio color="accent" dark v-model="market_data.receiving_mode" val="Single Address"
-                           label="Single Address"/>
+                  <q-btn @click="market_data.receiving_mode='Single Address'" color="grey-6"
+                         :class="market_data.receiving_mode==='Single Address'?'active_item':''"
+                         no-caps outline size="lg" class="full-width" :label="'Single Address'"/>
                 </div>
                 <div class="col-6">
-                  <q-radio color="accent" dark v-model="market_data.receiving_mode" val="Multi Address"
-                           label="Multi Address"/>
+                  <q-btn @click="market_data.receiving_mode='Multi Address'" color="grey-6"
+                         no-caps outline
+                         :class="market_data.receiving_mode==='Multi Address'?'active_item':''"
+                         size="lg" class="full-width" :label="'Multi Address'"/>
                 </div>
               </div>
               <div v-if="market_data.receiving_mode==='Single Address'">
@@ -265,16 +280,16 @@
           title="Payment"
           icon="payment"
         >
-          <q-card class="bg-transparent no-shadow" style="height: 28rem;"
+          <q-card class="bg-transparent no-shadow" style="height: 27rem;"
                   :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
             <q-card-section class="row q-col-gutter-sm">
               <div class="col-6">
-                <q-input outlined v-model="session_data.session" dense readonly dark color="grey-5"
+                <q-input outlined v-model="session_data" dense readonly dark color="grey-5"
                          class="full-width-right" padding="sm md" label="Session"
                 />
               </div>
               <div class="col-6">
-                <q-input outlined v-model="session_data.order_id" dense readonly dark color="grey-5"
+                <q-input outlined v-model="order_data.order_id" dense readonly dark color="grey-5"
                          class="full-width q-mr-sm" padding="sm md" label="Order Id"
                 />
               </div>
@@ -477,10 +492,24 @@ export default defineComponent({
         const span = document.createElement("span");
         span.style.color = "gray";
         span.innerText = line;
+        span.style.minWidth = "300px";
+        span.style.whiteSpace = "nowrap";
+        span.classList.add("q-mt-sm");
         const removeButton = document.createElement("button");
-        removeButton.innerText = "X";
+        const closeIcon = document.createElement("i");
+        closeIcon.classList.add("material-icons");
+        closeIcon.classList.add("q-mt-sm");
+        closeIcon.innerText = "close";
+        removeButton.appendChild(closeIcon);
+
         const retryButton = document.createElement("button");
-        retryButton.innerText = "Retry";
+        // retryButton.innerText = "Retry";
+        const refreshIcon = document.createElement("i");
+        refreshIcon.classList.add("material-icons");
+        refreshIcon.classList.add("q-mt-sm");
+        refreshIcon.classList.add("q-ml-sm");
+        refreshIcon.innerText = "refresh";
+        removeButton.appendChild(refreshIcon);
         const newDiv = document.createElement("div");
         newDiv.appendChild(span);
         newDiv.appendChild(retryButton);
@@ -559,7 +588,7 @@ export default defineComponent({
         })
     },
     getGasFeeData() {
-      this.$q.loading.show();
+      // this.$q.loading.show();
       try {
         const response = axios.get('https://mempool.space/api/v1/fees/recommended').then(function (response) {
           this.gas_fee_data = response.data;
@@ -567,7 +596,7 @@ export default defineComponent({
         }.bind(this));
       } catch (error) {
         console.error(error);
-        this.$q.loading.hide();
+        // this.$q.loading.hide();
       }
     },
     selectFee(item) {
@@ -638,9 +667,9 @@ export default defineComponent({
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     },
     async firstSampleRequest() {
-
+      this.session_data = this.$q.localStorage.getItem("session_data");
       if (this.session_data) {
-        this.file_data["session"] = this.session_data.session
+        this.file_data["session"] = this.session_data
       }
       let referral = this.$q.localStorage.getItem('referral')
       if (referral) {
@@ -655,7 +684,7 @@ export default defineComponent({
         });
         const json = response.data;
         this.order_data = response.data;
-        this.$q.localStorage.set("session_data", response.data)
+        this.$q.localStorage.set("session_data", response.data.session)
         this.session_data = this.$q.localStorage.getItem("session_data")
         console.log(json);
         this.$refs.stepper.next();
@@ -678,8 +707,8 @@ export default defineComponent({
       let addresses = this.market_data.receiving_mode === 'Single Address' ? single_address : Object.values(this.market_data.receiving_address_multi);
       try {
         let data = {
-          session: this.session_data.session,
-          order_id: this.session_data.order_id,
+          session: this.session_data,
+          order_id: this.order_data.order_id,
           network: "btc-mainnet",
           order_vbytes_cost: parseFloat((this.market_data.selected_fee !== 'Custom' ? this.gas_fee_data[this.market_data.selected_fee] : this.market_data.custom_fee)),
           customer_addresses: addresses,
@@ -723,7 +752,7 @@ export default defineComponent({
       try {
         this.$q.loading.show();
         const response = this.$api.get(
-          "orders/" + this.session_data.session + "/" + this.session_data.order_id
+          "orders/" + this.session_data + "/" + this.order_data.order_id
         ).then(function (response) {
           const orderInfo = response.data;
           if (response.data.order_commit_hash !== null) {
@@ -749,7 +778,7 @@ export default defineComponent({
         return 0
       }
       // parseInt((this.session_data.order_vbytes_count * (this.market_data.selected_fee!='Custom'?gas_fee_data[this.market_data.selected_fee]:this.market_data.custom_fee)) * 1.25 + this.session_data.order_file_count * 25546
-      return parseInt((this.session_data.order_vbytes_count * fee) * 1 + this.session_data.order_file_count * 546 + 2500);
+      return parseInt((this.order_data.order_vbytes_count * fee) * 1.25 + this.order_data.order_file_count * 25546);
     }
   }
 })
@@ -767,7 +796,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 400px;
+  height: 310px;
   border: 2px dashed #ccc;
   border-radius: 8px;
   background-color: transparent;
