@@ -70,7 +70,7 @@
   </q-layout>
 
 
-  <q-dialog no-backdrop-dismiss
+  <q-dialog
             v-model="terms_condition"
   >
     <q-card dark class="no-shadow dialog_card_style"
@@ -80,6 +80,9 @@
       </q-card-section>
       <q-separator color="secondary"></q-separator>
       <q-card-section class="">
+        <q-scroll-area
+          style="height: 30rem;"
+        >
         <!-- <div class="text-subtitle1">
           Terms and Conditions
         </div> -->
@@ -135,15 +138,16 @@
         <div class="text-caption text-secondary">
           If User has any questions or concerns regarding this Agreement, please contact us on Twitter.
         </div>
+        </q-scroll-area>
       </q-card-section>
 
-      <q-card-actions align="right" class="col-12 text-teal">
-        <q-btn label="OK" class="float-right " outline v-close-popup/>
-      </q-card-actions>
+      <q-card-section class="col-12 text-teal">
+        <q-btn label="OK" class="float-right q-mb-md" outline v-close-popup/>
+      </q-card-section>
     </q-card>
   </q-dialog>
 
-  <q-dialog no-backdrop-dismiss
+  <q-dialog
             v-model="privacy_policy"
   >
     <q-card dark class="no-shadow dialog_card_style"
@@ -153,6 +157,9 @@
       </q-card-section>
       <q-separator color="secondary"></q-separator>
       <q-card-section class="">
+        <q-scroll-area
+          style="height: 30rem;"
+        >
         <div class="text-caption text-secondary">
           At toki, we take your privacy very seriously. This Privacy Policy outlines how we collect, use, and protect
           your personal information when you use our services. By using toki's services, you consent to our collection
@@ -201,11 +208,12 @@
         <div class="text-caption text-secondary">
           If you have any questions or concerns regarding this Privacy Policy, please contact us on Twitter.
         </div>
+        </q-scroll-area>
       </q-card-section>
 
-      <q-card-actions align="right" class="col-12 text-teal">
-        <q-btn label="OK" class="float-right " outline v-close-popup/>
-      </q-card-actions>
+      <q-card-section class="col-12 q-mb-md text-teal">
+        <q-btn label="OK" class="float-right q-mb-md" outline v-close-popup/>
+      </q-card-section>
     </q-card>
   </q-dialog>
 </template>

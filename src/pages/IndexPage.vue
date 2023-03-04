@@ -394,7 +394,7 @@
       </div>
     </div>
 
-  <q-dialog no-backdrop-dismiss
+  <q-dialog
             v-model="faq"
   >
     <q-card dark class="no-shadow dialog_card_style"
@@ -404,6 +404,9 @@
       </q-card-section>
       <q-separator color="secondary"></q-separator>
       <q-card-section class="">
+        <q-scroll-area
+          style="height: 30rem;"
+        >
         <div class="text-subtitle1">
           Who are you?
         </div>
@@ -480,6 +483,16 @@
           link that you can share with your friends. Do not delete the tweet imediatelly after as we do regular checks,
           feel free to delete it after a couple of days.
         </div>
+         <div class="text-subtitle1 q-mt-md">
+          <q-btn label="Create Referral" @click="referral=true" no-caps dense color="secondary"></q-btn>
+        </div>
+
+        <div v-if="referral" class="q-mt-md">
+          <q-input outlined v-model="referral_address" dense dark color="grey-5"
+                   class="full-width-right" padding="sm md" label="Address"
+          />
+        </div>
+        </q-scroll-area>
       </q-card-section>
 
       <q-card-section class="col-12 text-teal">
@@ -489,7 +502,7 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-  <q-dialog no-backdrop-dismiss
+  <q-dialog
             v-model="orders"
   >
     <q-card dark class="no-shadow dialog_card_style"
@@ -560,7 +573,7 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-  <q-dialog no-backdrop-dismiss
+  <q-dialog
             v-model="load_session"
   >
     <q-card dark class="no-shadow dialog_card_style"
