@@ -17,7 +17,7 @@
           icon="inventory_2"
           :done="step > 1"
         >
-          <q-card class="bg-transparent no-shadow" style="height: 27rem;"
+          <q-card class="bg-transparent no-shadow" style="height: 26rem;"
                   :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
             <q-card-section class="q-pa-none text-center">
               <q-btn @click="selectTab('Files')" :class="selected_tab=='Files'?'active_item':''" color="grey-6" no-caps
@@ -71,7 +71,7 @@
               <q-card-section>
                 <div class="text-subtitle1 ">Add your .sats names below, each one on a new line.</div>
               </q-card-section>
-              <q-card-section class="text-center items-center justify-center">
+              <q-card-section class="text-center items-center q-pt-none justify-center">
                 <!--                <q-input-->
                 <!--                  type="textarea" color="secondary"-->
                 <!--                  v-model="snstext" outlined dark-->
@@ -82,7 +82,8 @@
                     contenteditable="true"
                     ref="editor"
                     @keydown.enter="processInput"
-                    style="white-space: pre-wrap"
+                    style="white-space: pre-wrap; border-radius: 8px;padding: 5px"
+                    class="active_border_secondary"
                   >
                   </div>
                 </div>
@@ -121,7 +122,7 @@
           icon="info"
           :done="step > 2" class=""
         >
-          <q-card class="bg-transparent no-shadow" style="height: 27rem;"
+          <q-card class="bg-transparent no-shadow" style="height: 26rem;"
                   :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
             <q-card-section class="row q-col-gutter-sm q-pt-none">
               <div class="col-12 text-center text-subtitle1">
@@ -231,7 +232,7 @@
                                :rules="[
                                 (v) => !!v || 'Amount is required',
                                 (v) => /^\d+(\.\d{1,2})?$/.test(v) || 'Amount should have at most 2 decimal points',
-                                (v) => parseFloat(v) > 1 || 'Amount should be above 1',
+                                (v) => parseFloat(v) > 0 || 'Amount should be above 1',
                                 (v) => parseFloat(v) < 50 || 'Amount should be below 50',
                               ]"
                       />
@@ -280,7 +281,7 @@
           title="Payment"
           icon="payment"
         >
-          <q-card class="bg-transparent no-shadow" style="height: 27rem;"
+          <q-card class="bg-transparent no-shadow" style="height: 26rem;"
                   :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
             <q-card-section class="row q-col-gutter-sm">
               <div class="col-6">
@@ -321,6 +322,9 @@
                              color="accent"
                              size="2em"
               />
+              <q-btn type="a" v-else :href="'https://mempool.space/tx/'+orderCommitHash" target="_blank" no-caps class="q-ml-sm" outline color="secondary">
+                View Transaction
+              </q-btn>
             </q-card-section>
 
             <!--            <q-item class="full-width">-->
@@ -343,16 +347,17 @@
         </q-step>
 
         <template v-slot:navigation>
-          <q-stepper-navigation class="text-center col-12 q-pb-md" :class="step === 2?'q-mb-md':''">
+          <q-separator color="secondary" class=""></q-separator>
+          <q-stepper-navigation class="text-center col-12" style="padding-bottom: 0px !important;">
             <q-btn v-if="step > 1 && step!=3" color="deep-orange" outline @click="clearData" label="Clear" no-caps size="lg"
-                   class="q-mr-sm float-left"/>
+                   class="q-mr-sm q-mb-sm q-mt-sm float-left"/>
 
             <q-btn v-if="step ===3 && message=='Order is still being processed...'" color="deep-orange" outline
                    @click="clearData" label="Inscribe More" no-caps size="lg"
-                   class="q-mr-sm float-left q-mb-md"/>
+                   class="q-mr-sm float-left q-mb-sm q-mt-sm"/>
 
             <q-btn :disable="Object.keys(file_data['data']).length==0" @click="firstSampleRequest" color="grey-6"
-                   no-caps outline size="lg"
+                   no-caps outline size="lg" class="q-mt-sm q-mb-sm"
                    v-if="step === 1" :label="'Next'"/>
 
             <span class="text-white text-h5 text-weight-bolder" v-if="step === 2">
@@ -363,7 +368,7 @@
               :disable="(market_data.receiving_mode === 'Single Address'? !market_data.receiving_address :
                Object.values(market_data.receiving_address_multi).length==0)"
               @click="makeTransaction" color="grey-6" no-caps outline size="lg"
-              v-if="step === 2" :label="'Next'" class="float-right"/>
+              v-if="step === 2" :label="'Next'" class="float-right q-mt-sm"/>
 
 <!--            <q-btn :disable="fileList.length==0" class="float-right q-mb-md"-->
 <!--                   @click="" color="grey-6" no-caps outline size="lg"-->
@@ -426,7 +431,8 @@ export default defineComponent({
       snstext: ref(''),
       sns_array_data: ref([]),
       sns_array_status: ref({}),
-      text: ref("")
+      text: ref(""),
+      orderCommitHash: ref("")
     }
   },
   mounted() {
@@ -494,11 +500,11 @@ export default defineComponent({
         span.innerText = line;
         span.style.minWidth = "300px";
         span.style.whiteSpace = "nowrap";
-        span.classList.add("q-mt-sm");
+        // span.classList.add("q-mt-sm");
         const removeButton = document.createElement("button");
         const closeIcon = document.createElement("i");
         closeIcon.classList.add("material-icons");
-        closeIcon.classList.add("q-mt-sm");
+        // closeIcon.classList.add("q-mt-sm");
         closeIcon.innerText = "close";
         removeButton.appendChild(closeIcon);
 
@@ -506,10 +512,10 @@ export default defineComponent({
         // retryButton.innerText = "Retry";
         const refreshIcon = document.createElement("i");
         refreshIcon.classList.add("material-icons");
-        refreshIcon.classList.add("q-mt-sm");
-        refreshIcon.classList.add("q-ml-sm");
+        // refreshIcon.classList.add("q-mt-sm");
+        retryButton.classList.add("q-mr-sm");
         refreshIcon.innerText = "refresh";
-        removeButton.appendChild(refreshIcon);
+        retryButton.appendChild(refreshIcon);
         const newDiv = document.createElement("div");
         newDiv.appendChild(span);
         newDiv.appendChild(retryButton);
@@ -592,7 +598,7 @@ export default defineComponent({
       try {
         const response = axios.get('https://mempool.space/api/v1/fees/recommended').then(function (response) {
           this.gas_fee_data = response.data;
-          this.$q.loading.hide();
+          // this.$q.loading.hide();
         }.bind(this));
       } catch (error) {
         console.error(error);
@@ -757,7 +763,7 @@ export default defineComponent({
           const orderInfo = response.data;
           if (response.data.order_commit_hash !== null) {
             this.orderCommitHash = response.data.order_commit_hash;
-            this.message = `Congratulations, your order is on its way. Check your order on chain at: https://mempool.space/${this.orderCommitHash}`;
+            this.message = `Congratulations, your order is on its way.`;
           } else {
             this.message = "Order is still being processed...";
           }
@@ -778,7 +784,7 @@ export default defineComponent({
         return 0
       }
       // parseInt((this.session_data.order_vbytes_count * (this.market_data.selected_fee!='Custom'?gas_fee_data[this.market_data.selected_fee]:this.market_data.custom_fee)) * 1.25 + this.session_data.order_file_count * 25546
-      return parseInt((this.order_data.order_vbytes_count * fee) * 1 + this.order_data.order_file_count * 546 + 2500);
+      return parseInt((this.order_data.order_vbytes_count * fee) * 1.25 + this.order_data.order_file_count * 25546);
     }
   }
 })
@@ -796,7 +802,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 310px;
+  height: 290px;
   border: 2px dashed #ccc;
   border-radius: 8px;
   background-color: transparent;

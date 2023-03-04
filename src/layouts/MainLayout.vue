@@ -99,7 +99,7 @@
         </div>
 
         <div class="text-subtitle1 q-mt-md">
-            <q-btn label="Create Referral" @click="referral=true" no-caps dense color="primary"></q-btn>
+          <q-btn label="Create Referral" @click="referral=true" no-caps dense color="primary"></q-btn>
         </div>
 
         <div v-if="referral" class="q-mt-md">
@@ -112,7 +112,8 @@
 
       <q-card-section class="col-12 text-teal">
         <q-btn label="OK" class="float-right q-mb-md" outline v-close-popup/>
-        <q-btn label="Referral" v-if="referral" @click="tweet" :disable="!referral_address" class="float-right q-mb-md q-mr-sm" outline  no-caps v-close-popup/>
+        <q-btn label="Referral" v-if="referral" @click="tweet" :disable="!referral_address"
+               class="float-right q-mb-md q-mr-sm" outline no-caps v-close-popup/>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -168,6 +169,11 @@
                     <div class="col-6">
                       <q-input outlined v-model="order.order_service_address" dense readonly dark color="grey-5"
                                class="full-width q-mr-sm" padding="sm md" label="Order Service Address"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <q-input outlined v-model="order.order_commit_hash" dense readonly dark color="grey-5"
+                               class="full-width q-mr-sm" padding="sm md" label="Order Commit Hash"
                       />
                     </div>
                   </q-card-section>
@@ -269,7 +275,15 @@ export default defineComponent({
           this.orders_data.sort((a, b) => b.order_id - a.order_id);
           this.orders = true
           this.$q.loading.hide();
+        }.bind(this)).catch(function (error) {
+          this.$q.loading.hide();
+          this.$q.notify({
+            type: 'negative',
+            message: error.response.data
+          });
         }.bind(this));
+
+        console.log(response)
       } catch (error) {
         console.error(error);
         this.$q.loading.hide();
