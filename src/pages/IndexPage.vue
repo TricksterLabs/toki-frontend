@@ -1,383 +1,588 @@
 <template>
   <q-page class="flex flex-center" style="background: linear-gradient(to right, #202D2E, #303428)">
-    <q-card class="no-shadow bg-transparent item_style" style="border: 1px solid grey"
-            :style="$q.screen.lt.sm?{'width':'96%'}:{}">
-      <q-stepper
-        v-model="step"
-        ref="stepper"
-        dark
-        class="bg-transparent"
-        active-color="accent"
-        done-color="secondary"
-        animated
-      >
-        <q-step
-          :name="1"
-          title="Upload"
-          icon="inventory_2"
-          :done="step > 1"
+    <div class="row">
+      <q-card class="no-shadow  bg-transparent item_style" :class="$q.screen.lt.sm?'q-ml-sm':'offset-2'" style="border: 1px solid grey"
+              :style="$q.screen.lt.sm?{'width':'96%'}:{}">
+        <q-stepper
+          v-model="step"
+          ref="stepper"
+          dark
+          class="bg-transparent"
+          active-color="accent"
+          done-color="secondary"
+          animated
         >
-          <q-card class="bg-transparent no-shadow" style="height: 26rem;"
-                  :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
-            <q-card-section class="q-pa-none text-center">
-              <q-btn @click="selectTab('Files')" :class="selected_tab=='Files'?'active_item':''" color="grey-6" no-caps
-                     outline size="lg" :label="'Files'"/>
-              <q-btn @click="selectTab('Sns')" :class="selected_tab=='Sns'?'active_item':''" class="q-ml-md"
-                     color="grey-6" no-caps outline size="lg" :label="'Sns'"/>
-            </q-card-section>
-
-            <div v-if="selected_tab=='Files'">
-              <q-card-section class="q-pb-none">
-                <div class="text-subtitle1 ">Upload any file type up to 400KB and total file size of up to 100MB.</div>
+          <q-step
+            :name="1"
+            title="Upload"
+            icon="inventory_2"
+            :done="step > 1"
+          >
+            <q-card class="bg-transparent no-shadow" style="height: 26rem;"
+                    :style="$q.screen.lt.sm?{'max-width': '20rem','min-width': '20rem'}:{'max-width': '35rem','min-width': '35rem'}">
+              <q-card-section class="q-pa-none text-center">
+                <q-btn @click="selectTab('Files')" :class="selected_tab=='Files'?'active_item':''" color="grey-6"
+                       no-caps
+                       outline size="lg" :label="'Files'"/>
+                <q-btn @click="selectTab('Sns')" :class="selected_tab=='Sns'?'active_item':''" class="q-ml-md"
+                       color="grey-6" no-caps outline size="lg" :label="'Sns'"/>
               </q-card-section>
-              <q-card-section class="text-center items-center justify-center">
-                <q-uploader class="dropzone no-shadow" ref="file"
-                            url="http://localhost:4444/upload"
-                            @added="handleAdded"
-                            multiple
-                >
-                  <template v-slot:list="scope">
-                    <q-list separator dark>
-                      <q-item v-for="file in scope.files.sort(naturalCompare)" :key="file.__key"
-                              class="full-width q-my-xs q-pa-md" style="border-color: ">
-                        <q-item-section class="text-center">
-                          <q-item-label class="full-width text-weight-bolder ellipsis">
-                            {{ file.name }}
-                          </q-item-label>
 
-                          <q-item-label caption class="text-white">
-                            {{ file.__sizeLabel }} / <span v-if="file_data_display.hasOwnProperty(file.name)"> {{
-                              file_data_display[file.name]['contentType']
-                            }}</span>
-                            <!--                / {{ file.__progressLabel }}-->
-                          </q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-
-                    <q-item-section class="drag-drop" v-if="scope.files.length==0">
-                      <q-item-label>
-                        <q-icon name="cloud_upload" class="cursor-pointer" size="100px" @click="$refs.file.pickFiles()"
-                                color="white"/>
-                        <div>{{ dropzoneText }}</div>
-                      </q-item-label>
-                    </q-item-section>
-
-                  </template>
-                </q-uploader>
-              </q-card-section>
-            </div>
-            <div v-if="selected_tab=='Sns'">
-              <q-card-section>
-                <div class="text-subtitle1 ">Add your .sats names below, each one on a new line.</div>
-              </q-card-section>
-              <q-card-section class="text-center items-center q-pt-none justify-center">
-                <!--                <q-input-->
-                <!--                  type="textarea" color="secondary"-->
-                <!--                  v-model="snstext" outlined dark-->
-                <!--                  @keyup.enter="snsTextProcess"-->
-                <!--                />-->
-                <div class="textarea">
-                  <div
-                    contenteditable="true"
-                    ref="editor"
-                    @keydown.enter="processInput"
-                    style="white-space: pre-wrap; border-radius: 8px;padding: 5px"
-                    class="active_border_secondary"
-                  >
+              <div v-if="selected_tab=='Files'">
+                <q-card-section class="q-pb-none">
+                  <div class="text-subtitle1 ">Upload any file type up to 400KB and total file size of up to 100MB.
                   </div>
-                </div>
+                </q-card-section>
+                <q-card-section class="text-center items-center justify-center">
+                  <q-uploader class="dropzone no-shadow" ref="file"
+                              url="http://localhost:4444/upload"
+                              @added="handleAdded"
+                              multiple
+                  >
+                    <template v-slot:list="scope">
+                      <q-list separator dark>
+                        <q-item v-for="file in scope.files.sort(naturalCompare)" :key="file.__key"
+                                class="full-width q-my-xs q-pa-md" style="border-color: ">
+                          <q-item-section class="text-center">
+                            <q-item-label class="full-width text-weight-bolder ellipsis">
+                              {{ file.name }}
+                            </q-item-label>
 
-                <div>
-                  <q-badge color="green" rounded class="q-mr-sm"/>
-                  Domain is Free
-                  <q-badge color="red" rounded class="q-ml-md"/>
-                  <span class="q-ml-sm">Domain is Taken</span>
-                  <q-badge color="yellow" rounded class="q-ml-md"/>
-                  <span class="q-ml-sm">Could not retrieve data</span>
+                            <q-item-label caption class="text-white">
+                              {{ file.__sizeLabel }} / <span v-if="file_data_display.hasOwnProperty(file.name)"> {{
+                                file_data_display[file.name]['contentType']
+                              }}</span>
+                              <!--                / {{ file.__progressLabel }}-->
+                            </q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+
+                      <q-item-section class="drag-drop" v-if="scope.files.length==0">
+                        <q-item-label>
+                          <q-icon name="cloud_upload" class="cursor-pointer" size="100px"
+                                  @click="$refs.file.pickFiles()"
+                                  color="white"/>
+                          <div>{{ dropzoneText }}</div>
+                        </q-item-label>
+                      </q-item-section>
+
+                    </template>
+                  </q-uploader>
+                </q-card-section>
+              </div>
+              <div v-if="selected_tab=='Sns'">
+                <q-card-section>
+                  <div class="text-subtitle1 ">Add your .sats names below, each one on a new line.</div>
+                </q-card-section>
+                <q-card-section class="text-center items-center q-pt-none justify-center">
+                  <!--                <q-input-->
+                  <!--                  type="textarea" color="secondary"-->
+                  <!--                  v-model="snstext" outlined dark-->
+                  <!--                  @keyup.enter="snsTextProcess"-->
+                  <!--                />-->
+                  <div class="textarea">
+                    <div
+                      contenteditable="true"
+                      ref="editor"
+                      @keydown.enter="processInput"
+                      style="white-space: pre-wrap; border-radius: 8px;padding: 5px"
+                      class="active_border_secondary"
+                    >
+                    </div>
+                  </div>
+
+                  <div>
+                    <q-badge color="green" rounded class="q-mr-sm"/>
+                    Domain is Free
+                    <q-badge color="red" rounded class="q-ml-md"/>
+                    <span class="q-ml-sm">Domain is Taken</span>
+                    <q-badge color="yellow" rounded class="q-ml-md"/>
+                    <span class="q-ml-sm">Could not retrieve data</span>
+                  </div>
+                </q-card-section>
+                <!--              <q-card-section>-->
+                <!--                <q-list>-->
+                <!--                  <q-item-label header class="text-white text-subtitle1">Items</q-item-label>-->
+                <!--                  <template v-for="(item, item_index) in sns_array_data">-->
+                <!--                    <q-item class="rounded-borders bg-transparent q-my-sm active_border_secondary">-->
+                <!--                      <q-item-section side class="text-white">-->
+                <!--                        {{ item_index + 1 }}-->
+                <!--                      </q-item-section>-->
+                <!--                      <q-item-section :class="sns_array_status.hasOwnProperty(item)?'text-positive text-wright-bolder':''">-->
+                <!--                        {{ item }}-->
+                <!--                      </q-item-section>-->
+                <!--                    </q-item>-->
+                <!--                  </template>-->
+                <!--                </q-list>-->
+                <!--              </q-card-section>-->
+              </div>
+            </q-card>
+          </q-step>
+
+          <q-step
+            :name="2"
+            title="Configure"
+            icon="info"
+            :done="step > 2" class=""
+          >
+            <q-card class="bg-transparent no-shadow" style="height: 26rem;"
+                    :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
+              <q-card-section class="row q-col-gutter-sm q-pt-none">
+                <div class="col-12 text-center text-subtitle1">
+                  Info
+                </div>
+                <div class="col-6">
+                  <q-input outlined v-model="session_data" dense readonly dark color="grey-5"
+                           class="full-width-right" padding="sm md" label="Session"
+                  />
+                </div>
+                <div class="col-6">
+                  <q-input outlined v-model="order_data.order_id" dense readonly dark color="grey-5"
+                           class="full-width q-mr-sm" padding="sm md" label="Order Id"
+                  />
+                </div>
+                <div class="col-6">
+                  <q-input outlined model-value="Bitcoin Mainnet" dense readonly dark color="grey-5"
+                           class="full-width q-mr-sm" padding="sm md" label="Network"
+                  />
+                </div>
+                <div class="col-6">
+                  <q-input outlined :model-value="order_data.order_file_count" dense readonly dark color="grey-5"
+                           class="full-width q-mr-sm" padding="sm md" label="File Count"
+                  />
+                </div>
+                <div class="col-6">
+                  <q-input outlined :model-value="order_data.order_transaction_type" dense readonly dark color="grey-5"
+                           class="full-width-right" padding="sm md" input-class="text-capitalize"
+                           label="Transaction Type"
+                  />
+                </div>
+                <div class="col-6">
+                  <q-input outlined model-value="546" dense readonly dark color="grey-5"
+                           class="full-width q-mr-sm" padding="sm md" label="Inscription Padding"
+                  />
                 </div>
               </q-card-section>
-              <!--              <q-card-section>-->
-              <!--                <q-list>-->
-              <!--                  <q-item-label header class="text-white text-subtitle1">Items</q-item-label>-->
-              <!--                  <template v-for="(item, item_index) in sns_array_data">-->
-              <!--                    <q-item class="rounded-borders bg-transparent q-my-sm active_border_secondary">-->
-              <!--                      <q-item-section side class="text-white">-->
-              <!--                        {{ item_index + 1 }}-->
-              <!--                      </q-item-section>-->
-              <!--                      <q-item-section :class="sns_array_status.hasOwnProperty(item)?'text-positive text-wright-bolder':''">-->
-              <!--                        {{ item }}-->
-              <!--                      </q-item-section>-->
-              <!--                    </q-item>-->
-              <!--                  </template>-->
-              <!--                </q-list>-->
-              <!--              </q-card-section>-->
-            </div>
-          </q-card>
-        </q-step>
+              <q-card-section v-if="!market_data.advance" class="q-pt-none">
+                <div class="text-subtitle1 text-center">
+                  Gas Fee
+                </div>
+                <div class="row q-col-gutter-sm">
+                  <div class="col">
+                    <q-card class="bg-transparent fit no-shadow text-center cursor-pointer"
+                            @mousedown="selectFee('economyFee')" bordered v-ripple
+                            style="border: 1px #9e9e9e solid"
+                            :class="market_data.selected_fee==='economyFee'?'active_border':''">
+                      <q-card-section class="col-12 q-pa-sm">
+                        ~ Got Time <br/>
+                      </q-card-section>
+                      <q-card-section class="q-pt-none">
+                        <span>{{ gas_fee_data['economyFee'] }}</span>
+                      </q-card-section>
+                    </q-card>
+                  </div>
+                  <div class="col">
+                    <q-card class="bg-transparent fit  no-shadow text-center cursor-pointer"
+                            @mousedown="selectFee('hourFee')"
+                            bordered v-ripple
+                            style="border: 1px #9e9e9e solid"
+                            :class="market_data.selected_fee==='hourFee'?'active_border':''">
+                      <q-card-section class="col-12 q-pa-sm">
+                        ~ 1 Hour
+                      </q-card-section>
 
-        <q-step
-          :name="2"
-          title="Configure"
-          icon="info"
-          :done="step > 2" class=""
-        >
-          <q-card class="bg-transparent no-shadow" style="height: 26rem;"
-                  :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
-            <q-card-section class="row q-col-gutter-sm q-pt-none">
-              <div class="col-12 text-center text-subtitle1">
-                Info
-              </div>
-              <div class="col-6">
-                <q-input outlined v-model="session_data" dense readonly dark color="grey-5"
-                         class="full-width-right" padding="sm md" label="Session"
-                />
-              </div>
-              <div class="col-6">
-                <q-input outlined v-model="order_data.order_id" dense readonly dark color="grey-5"
-                         class="full-width q-mr-sm" padding="sm md" label="Order Id"
-                />
-              </div>
-              <div class="col-6">
-                <q-input outlined model-value="Bitcoin Mainnet" dense readonly dark color="grey-5"
-                         class="full-width q-mr-sm" padding="sm md" label="Network"
-                />
-              </div>
-              <div class="col-6">
-                <q-input outlined :model-value="order_data.order_file_count" dense readonly dark color="grey-5"
-                         class="full-width q-mr-sm" padding="sm md" label="File Count"
-                />
-              </div>
-              <div class="col-6">
-                <q-input outlined :model-value="order_data.order_transaction_type" dense readonly dark color="grey-5"
-                         class="full-width-right" padding="sm md" input-class="text-capitalize" label="Transaction Type"
-                />
-              </div>
-              <div class="col-6">
-                <q-input outlined model-value="546" dense readonly dark color="grey-5"
-                         class="full-width q-mr-sm" padding="sm md" label="Inscription Padding"
-                />
-              </div>
-            </q-card-section>
-            <q-card-section v-if="!market_data.advance" class="q-pt-none">
-              <div class="text-subtitle1 text-center">
-                Gas Fee
-              </div>
-              <div class="row q-col-gutter-sm">
-                <div class="col">
-                  <q-card class="bg-transparent fit no-shadow text-center cursor-pointer"
-                          @mousedown="selectFee('economyFee')" bordered v-ripple
-                          style="border: 1px #9e9e9e solid"
-                          :class="market_data.selected_fee==='economyFee'?'active_border':''">
-                    <q-card-section class="col-12 q-pa-sm">
-                      ~ Got Time <br/>
-                    </q-card-section>
-                    <q-card-section class="q-pt-none">
-                      <span>{{ gas_fee_data['economyFee'] }}</span>
-                    </q-card-section>
-                  </q-card>
-                </div>
-                <div class="col">
-                  <q-card class="bg-transparent fit  no-shadow text-center cursor-pointer"
-                          @mousedown="selectFee('hourFee')"
-                          bordered v-ripple
-                          style="border: 1px #9e9e9e solid"
-                          :class="market_data.selected_fee==='hourFee'?'active_border':''">
-                    <q-card-section class="col-12 q-pa-sm">
-                      ~ 1 Hour
-                    </q-card-section>
-
-                    <q-card-section class="q-pt-none">
-                      <span>{{ gas_fee_data['hourFee'] }}</span>
-                    </q-card-section>
-                  </q-card>
-                </div>
-                <div class="col">
-                  <q-card class="bg-transparent no-shadow fit   text-center cursor-pointer"
-                          @mousedown="selectFee('halfHourFee')" bordered v-ripple
-                          style="border: 1px #9e9e9e solid"
-                          :class="market_data.selected_fee==='halfHourFee'?'active_border':''">
-                    <q-card-section class="col-12 q-pa-sm">
-                      ~ 30 Min
-                    </q-card-section>
-                    <q-card-section class="q-pt-none">
-                      <span>{{ gas_fee_data['halfHourFee'] }}</span>
-                    </q-card-section>
-                  </q-card>
-                </div>
-                <div class="col">
-                  <q-card class="bg-transparent no-shadow fit  text-center cursor-pointer"
-                          @mousedown="selectFee('fastestFee')" bordered v-ripple
-                          style="border: 1px #9e9e9e solid"
-                          :class="market_data.selected_fee==='fastestFee'?'active_border':''">
-                    <q-card-section class="col-12 q-pa-sm">
-                      ~ 10 Min
-                    </q-card-section>
-                    <q-card-section class="q-pt-none">
-                      <span>{{ gas_fee_data['fastestFee'] }}</span>
-                    </q-card-section>
-                  </q-card>
-                </div>
-                <div class="col">
-                  <q-card class="bg-transparent no-shadow fit  text-center cursor-pointer"
-                          @mousedown="selectFee('Custom')"
-                          bordered v-ripple
-                          style="border: 1px #9e9e9e solid"
-                          :class="market_data.selected_fee==='Custom'?'active_border':''">
-                    <q-card-section class="col-12 q-pa-sm">
-                      Custom <br/>
-                      <q-input input-class="text-center" type="text" hide-bottom-space outlined
-                               v-model="market_data.custom_fee" dense dark color="grey-5"
-                               class="" padding="sm md" min="1" max="50"
-                               :rules="[
+                      <q-card-section class="q-pt-none">
+                        <span>{{ gas_fee_data['hourFee'] }}</span>
+                      </q-card-section>
+                    </q-card>
+                  </div>
+                  <div class="col">
+                    <q-card class="bg-transparent no-shadow fit   text-center cursor-pointer"
+                            @mousedown="selectFee('halfHourFee')" bordered v-ripple
+                            style="border: 1px #9e9e9e solid"
+                            :class="market_data.selected_fee==='halfHourFee'?'active_border':''">
+                      <q-card-section class="col-12 q-pa-sm">
+                        ~ 30 Min
+                      </q-card-section>
+                      <q-card-section class="q-pt-none">
+                        <span>{{ gas_fee_data['halfHourFee'] }}</span>
+                      </q-card-section>
+                    </q-card>
+                  </div>
+                  <div class="col">
+                    <q-card class="bg-transparent no-shadow fit  text-center cursor-pointer"
+                            @mousedown="selectFee('fastestFee')" bordered v-ripple
+                            style="border: 1px #9e9e9e solid"
+                            :class="market_data.selected_fee==='fastestFee'?'active_border':''">
+                      <q-card-section class="col-12 q-pa-sm">
+                        ~ 10 Min
+                      </q-card-section>
+                      <q-card-section class="q-pt-none">
+                        <span>{{ gas_fee_data['fastestFee'] }}</span>
+                      </q-card-section>
+                    </q-card>
+                  </div>
+                  <div class="col">
+                    <q-card class="bg-transparent no-shadow fit  text-center cursor-pointer"
+                            @mousedown="selectFee('Custom')"
+                            bordered v-ripple
+                            style="border: 1px #9e9e9e solid"
+                            :class="market_data.selected_fee==='Custom'?'active_border':''">
+                      <q-card-section class="col-12 q-pa-sm">
+                        Custom <br/>
+                        <q-input input-class="text-center" type="text" hide-bottom-space outlined
+                                 v-model="market_data.custom_fee" dense dark color="grey-5"
+                                 class="" padding="sm md" min="1" max="50"
+                                 :rules="[
                                 (v) => !!v || 'Amount is required',
                                 (v) => /^\d+(\.\d{1,2})?$/.test(v) || 'Amount should have at most 2 decimal points',
                                 (v) => parseFloat(v) > 0 || 'Amount should be above 1',
                                 (v) => parseFloat(v) < 50 || 'Amount should be below 50',
                               ]"
-                      />
-                    </q-card-section>
-                  </q-card>
+                        />
+                      </q-card-section>
+                    </q-card>
+                  </div>
                 </div>
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pt-none">
-              <div class="row q-col-gutter-sm">
-                <div class="col-6">
-                  <q-btn @click="market_data.receiving_mode='Single Address'" color="grey-6"
-                         :class="market_data.receiving_mode==='Single Address'?'active_item':''"
-                         no-caps outline size="lg" class="full-width" :label="'Single Address'"/>
+              </q-card-section>
+              <q-card-section class="q-pt-none">
+                <div class="row q-col-gutter-sm">
+                  <div class="col-6">
+                    <q-btn @click="market_data.receiving_mode='Single Address'" color="grey-6"
+                           :class="market_data.receiving_mode==='Single Address'?'active_item':''"
+                           no-caps outline size="lg" class="full-width" :label="'Single Address'"/>
+                  </div>
+                  <div class="col-6">
+                    <q-btn @click="market_data.receiving_mode='Multi Address'" color="grey-6"
+                           no-caps outline
+                           :class="market_data.receiving_mode==='Multi Address'?'active_item':''"
+                           size="lg" class="full-width" :label="'Multi Address'"/>
+                  </div>
                 </div>
-                <div class="col-6">
-                  <q-btn @click="market_data.receiving_mode='Multi Address'" color="grey-6"
-                         no-caps outline
-                         :class="market_data.receiving_mode==='Multi Address'?'active_item':''"
-                         size="lg" class="full-width" :label="'Multi Address'"/>
-                </div>
-              </div>
-              <div v-if="market_data.receiving_mode==='Single Address'">
-                <q-input outlined v-model.trim="market_data.receiving_address" dense dark color="grey-5"
-                         class="q-mt-sm" padding="sm md" label="Receiving address"
-                />
-              </div>
-              <div v-if="market_data.receiving_mode==='Multi Address'">
-                <template v-for="n in Object.keys(file_data.data)">
-                  <q-input outlined v-model.trim="market_data.receiving_address_multi[n]" dense dark color="grey-5"
-                           class="q-mt-sm" padding="sm md" :label="'Receiving address - '+n"
+                <div v-if="market_data.receiving_mode==='Single Address'">
+                  <q-input outlined v-model.trim="market_data.receiving_address" dense dark color="grey-5"
+                           class="q-mt-sm" padding="sm md" label="Receiving address"
                   />
-                </template>
-              </div>
-            </q-card-section>
-            <!--            <q-card-section class="text-center">-->
-            <!--              <div class="text-white text-h5 text-weight-bolder">-->
-            <!--                Final Amount - {{ getAmount }}-->
-            <!--              </div>-->
-            <!--            </q-card-section>-->
-          </q-card>
-        </q-step>
+                </div>
+                <div v-if="market_data.receiving_mode==='Multi Address'">
+                  <template v-for="n in Object.keys(file_data.data)">
+                    <q-input outlined v-model.trim="market_data.receiving_address_multi[n]" dense dark color="grey-5"
+                             class="q-mt-sm" padding="sm md" :label="'Receiving address - '+n"
+                    />
+                  </template>
+                </div>
+              </q-card-section>
+              <!--            <q-card-section class="text-center">-->
+              <!--              <div class="text-white text-h5 text-weight-bolder">-->
+              <!--                Final Amount - {{ getAmount }}-->
+              <!--              </div>-->
+              <!--            </q-card-section>-->
+            </q-card>
+          </q-step>
 
-        <q-step
-          :name="3"
-          title="Payment"
-          icon="payment"
-        >
-          <q-card class="bg-transparent no-shadow" style="height: 26rem;"
-                  :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
-            <q-card-section class="row q-col-gutter-sm">
-              <div class="col-6">
-                <q-input outlined v-model="session_data" dense readonly dark color="grey-5"
-                         class="full-width-right" padding="sm md" label="Session"
+          <q-step
+            :name="3"
+            title="Payment"
+            icon="payment"
+          >
+            <q-card class="bg-transparent no-shadow" style="height: 26rem;"
+                    :style="$q.screen.lt.sm?{'max-width': '21rem','min-width': '21rem'}:{'max-width': '35rem','min-width': '35rem'}">
+              <q-card-section class="row q-col-gutter-sm">
+                <div class="col-6">
+                  <q-input outlined v-model="session_data" dense readonly dark color="grey-5"
+                           class="full-width-right" padding="sm md" label="Session"
+                  />
+                </div>
+                <div class="col-6">
+                  <q-input outlined v-model="order_data.order_id" dense readonly dark color="grey-5"
+                           class="full-width q-mr-sm" padding="sm md" label="Order Id"
+                  />
+                </div>
+
+                <div class="col-12 q-mt-md">
+                  <q-input outlined v-model="market_response.serviceAddress" readonly dense dark input-class=""
+                           class="q-mr-sm" padding="sm md" @click="copyContent(market_response.serviceAddress)"
+                           label="Bitcoin Address" color="accent"
+                  >
+                  </q-input>
+                </div>
+                <div class="col-6 q-mt-md">
+                  <q-input outlined :model-value="market_response.amount/100000000" dense readonly dark color="grey-5"
+                           class="full-width-right" padding="sm md" label="Amount (BTC)"
+                           @click="copyContent(market_response.amount/100000000)"
+                  />
+                </div>
+                <div class="col-6 q-mt-md">
+                  <q-input outlined :model-value="market_response.amount" dense readonly dark color="grey-5"
+                           class="full-width q-mr-sm" padding="sm md" label="Amount (Satoshi)"
+                           @click="copyContent(market_response.amount)"
+                  />
+                </div>
+              </q-card-section>
+
+              <q-card-section v-if="message">
+                {{ message }}
+                <q-spinner-pie v-if="message=='Order is still being processed...'"
+                               color="accent"
+                               size="2em"
                 />
-              </div>
-              <div class="col-6">
-                <q-input outlined v-model="order_data.order_id" dense readonly dark color="grey-5"
-                         class="full-width q-mr-sm" padding="sm md" label="Order Id"
-                />
-              </div>
+                <q-btn type="a" v-else :href="'https://mempool.space/tx/'+orderCommitHash" target="_blank" no-caps
+                       class="q-ml-sm" outline color="secondary">
+                  View Transaction
+                </q-btn>
+              </q-card-section>
 
-              <div class="col-12 q-mt-md">
-                <q-input outlined v-model="market_response.serviceAddress" readonly dense dark input-class=""
-                         class="q-mr-sm" padding="sm md" @click="copyContent(market_response.serviceAddress)"
-                         label="Bitcoin Address" color="accent"
-                >
-                </q-input>
-              </div>
-              <div class="col-6 q-mt-md">
-                <q-input outlined :model-value="market_response.amount/100000000" dense readonly dark color="grey-5"
-                         class="full-width-right" padding="sm md" label="Amount (BTC)"
-                         @click="copyContent(market_response.amount/100000000)"
-                />
-              </div>
-              <div class="col-6 q-mt-md">
-                <q-input outlined :model-value="market_response.amount" dense readonly dark color="grey-5"
-                         class="full-width q-mr-sm" padding="sm md" label="Amount (Satoshi)"
-                         @click="copyContent(market_response.amount)"
-                />
-              </div>
-            </q-card-section>
+              <!--            <q-item class="full-width">-->
+              <!--              <q-item-section>-->
+              <!--                <q-item-label class="q-mb-sm text-grey-5">Amount</q-item-label>-->
+              <!--                <q-input outlined :model-value="getAmount" readonly dense dark color="grey-5"-->
+              <!--                         class="float-right q-mr-sm" padding="sm md"-->
+              <!--                >-->
+              <!--                  <template v-slot:after>-->
+              <!--                    <q-btn round dense flat icon="content_copy" @click="copyContent(getAmount)">-->
+              <!--                      <q-tooltip>-->
+              <!--                        Copy Amount-->
+              <!--                      </q-tooltip>-->
+              <!--                    </q-btn>-->
+              <!--                  </template>-->
+              <!--                </q-input>-->
+              <!--              </q-item-section>-->
+              <!--            </q-item>-->
+            </q-card>
+          </q-step>
 
-            <q-card-section v-if="message">
-              {{ message }}
-              <q-spinner-pie v-if="message=='Order is still being processed...'"
-                             color="accent"
-                             size="2em"
-              />
-              <q-btn type="a" v-else :href="'https://mempool.space/tx/'+orderCommitHash" target="_blank" no-caps class="q-ml-sm" outline color="secondary">
-                View Transaction
-              </q-btn>
-            </q-card-section>
+          <template v-slot:navigation>
+            <q-separator color="secondary" class=""></q-separator>
+            <q-stepper-navigation class="text-center col-12" style="padding-bottom: 0px !important;">
+              <q-btn v-if="step > 1 && step!=3" color="deep-orange" outline @click="clearData" label="Clear" no-caps
+                     size="lg"
+                     class="q-mr-sm q-mb-sm q-mt-sm float-left"/>
 
-            <!--            <q-item class="full-width">-->
-            <!--              <q-item-section>-->
-            <!--                <q-item-label class="q-mb-sm text-grey-5">Amount</q-item-label>-->
-            <!--                <q-input outlined :model-value="getAmount" readonly dense dark color="grey-5"-->
-            <!--                         class="float-right q-mr-sm" padding="sm md"-->
-            <!--                >-->
-            <!--                  <template v-slot:after>-->
-            <!--                    <q-btn round dense flat icon="content_copy" @click="copyContent(getAmount)">-->
-            <!--                      <q-tooltip>-->
-            <!--                        Copy Amount-->
-            <!--                      </q-tooltip>-->
-            <!--                    </q-btn>-->
-            <!--                  </template>-->
-            <!--                </q-input>-->
-            <!--              </q-item-section>-->
-            <!--            </q-item>-->
-          </q-card>
-        </q-step>
+              <q-btn v-if="step ===3 && message=='Order is still being processed...'" color="deep-orange" outline
+                     @click="clearData" label="Inscribe More" no-caps size="lg"
+                     class="q-mr-sm float-left q-mb-sm q-mt-sm"/>
 
-        <template v-slot:navigation>
-          <q-separator color="secondary" class=""></q-separator>
-          <q-stepper-navigation class="text-center col-12" style="padding-bottom: 0px !important;">
-            <q-btn v-if="step > 1 && step!=3" color="deep-orange" outline @click="clearData" label="Clear" no-caps size="lg"
-                   class="q-mr-sm q-mb-sm q-mt-sm float-left"/>
+              <q-btn :disable="Object.keys(file_data['data']).length==0" @click="firstSampleRequest" color="grey-6"
+                     no-caps outline size="lg" class="q-mt-sm q-mb-sm"
+                     v-if="step === 1" :label="'Next'"/>
 
-            <q-btn v-if="step ===3 && message=='Order is still being processed...'" color="deep-orange" outline
-                   @click="clearData" label="Inscribe More" no-caps size="lg"
-                   class="q-mr-sm float-left q-mb-sm q-mt-sm"/>
-
-            <q-btn :disable="Object.keys(file_data['data']).length==0" @click="firstSampleRequest" color="grey-6"
-                   no-caps outline size="lg" class="q-mt-sm q-mb-sm"
-                   v-if="step === 1" :label="'Next'"/>
-
-            <span class="text-white text-h5 text-weight-bolder" v-if="step === 2">
-                Final Amount - {{ getAmount }}
+              <span class="text-white text-h6 text-weight-bolder" v-if="step === 2">
+                Final Amount {{
+                  getAmount
+                }} Sat({{ parseFloat(getAmount / 100000000 * (this.bitcoin_price.bitcoin.usd)).toFixed(2) }} USD$)
             </span>
 
-            <q-btn
-              :disable="(market_data.receiving_mode === 'Single Address'? !market_data.receiving_address :
+              <q-btn
+                :disable="(market_data.receiving_mode === 'Single Address'? !market_data.receiving_address :
                Object.values(market_data.receiving_address_multi).length==0)"
-              @click="makeTransaction" color="grey-6" no-caps outline size="lg"
-              v-if="step === 2" :label="'Next'" class="float-right q-mt-sm"/>
+                @click="makeTransaction" color="grey-6" no-caps outline size="lg"
+                v-if="step === 2" :label="'Next'" class="float-right q-mt-sm"/>
 
-<!--            <q-btn :disable="fileList.length==0" class="float-right q-mb-md"-->
-<!--                   @click="" color="grey-6" no-caps outline size="lg"-->
-<!--                   v-if="step === 3" :label="'Finish'"/>-->
-          </q-stepper-navigation>
-        </template>
-      </q-stepper>
+              <!--            <q-btn :disable="fileList.length==0" class="float-right q-mb-md"-->
+              <!--                   @click="" color="grey-6" no-caps outline size="lg"-->
+              <!--                   v-if="step === 3" :label="'Finish'"/>-->
+            </q-stepper-navigation>
+          </template>
+        </q-stepper>
 
+      </q-card>
+      <div class="text-center col-12 text-white q-mt-sm">
+        <q-btn label="Faq" @click="faq=true" flat no-caps></q-btn>
+        <q-btn label="Orders" @click="getOrderData" class="q-mx-md" flat no-caps></q-btn>
+        <q-btn label="Load Session" @click="load_session=true" flat no-caps></q-btn>
+      </div>
+    </div>
+
+  <q-dialog no-backdrop-dismiss
+            v-model="faq"
+  >
+    <q-card dark class="no-shadow dialog_card_style"
+            style="width: 700px; max-width: 80vw;background: linear-gradient(to right, #202D2E, #303428)">
+      <q-card-section>
+        <div class="text-h6">FAQ</div>
+      </q-card-section>
+      <q-separator color="secondary"></q-separator>
+      <q-card-section class="">
+        <div class="text-subtitle1">
+          Who are you?
+        </div>
+        <div class="text-caption text-secondary">
+          We are a group of Bitcoin Ordinal enthusiasts who are trying to make the ecosystem more accessible to the
+          masses.
+        </div>
+        <div class="text-subtitle1 q-mt-md">
+          What are Bitcoin Ordinals?
+        </div>
+        <div class="text-caption text-secondary">
+          Bitcoin ordinals are a numbering scheme for satoshis that allows tracking and transferring individual sats.
+          They are digital assets inscribed on a satoshi, the smallest denomination of Bitcoin. The Ordinals Protocol
+          allows users to send and receive sats that carry optional extra data such as text, JPEGs, audio or videos
+          similar to NFTs.
+        </div>
+        <div class="text-subtitle1 q-mt-md">
+          What services do you offer?
+        </div>
+        <div class="text-caption text-secondary">
+          We currently offer the most advanced inscription service on the market and are working on a number of other
+          services that will be released in the near future.
+        </div>
+        <div class="text-subtitle1 q-mt-md">
+          What are the limits?
+        </div>
+        <div class="text-caption text-secondary">
+          Bitcoin has a limit of maximum 400kb per transaction. We have a limit of 100mb total order size but if you
+          need more than that you can contact us.
+        </div>
+        <div class="text-subtitle1 q-mt-md">
+          What are your fees?
+        </div>
+        <div class="text-caption text-secondary">
+          We charge 0.00025 BTC per file and 25% of the network fees selected.
+        </div>
+        <div class="text-subtitle1 q-mt-md">
+          What is "Chained" transaction type?
+        </div>
+        <div class="text-caption text-secondary">
+          Chained transaction type is automatically selected by our system if you are inscribing less (and including)
+          than 20 files under 400kb total size. All the inscription transactions are sent immediately after your payment
+          is in the mempool without waiting for confirmation and without any extra commit transaction unlike the
+          official Ordinal Node allows ensuring the absolutely fastest processing time. Furthermore chaining them
+          together and adding the gas fee on the last transaction almost guarantees they will be processed at the same
+          time and in turn receive ordinals with consecutive IDs.
+        </div>
+        <div class="text-subtitle1 q-mt-md">
+          What is "Batched" transaction type?
+        </div>
+        <div class="text-caption text-secondary">
+          Batched transaction type is automatically selected by our system if you don't qualify for a "Chained"
+          transaction type. This has an extra commit transaction that sends the funds to multiple reveal addresses.
+          After the commit transaction is confirmed all of the reveal transactions are sent at once. This mode allows us
+          to broadcast tens of thousands of transactions at the same time, all connected to the same parent transaction.
+        </div>
+
+        <div class="text-subtitle1 q-mt-md">
+          Do you offer image compression?
+        </div>
+        <div class="text-caption text-secondary">
+          Image compression usually means a loss of quality for a much lower file size and potentially removing alpha
+          channels on images with transparency. We encourage each user to reduce their files as much as possible using
+          various tools found on the internet and to select the quality compression they are comfortable with. We do not
+          offer any compression services because of this.
+        </div>
+        <div class="text-subtitle1 q-mt-md">
+          What is the referral program?
+        </div>
+        <div class="text-caption text-secondary">
+          We offer a referral program where you can earn 25% of the service profits from each order your referral makes.
+          To get a valid link you need to click the "Create Referral" button below, type in your bitcoin address and you
+          will be prompted to tweet about us using the template provided. Once you do that you will be given a referral
+          link that you can share with your friends. Do not delete the tweet imediatelly after as we do regular checks,
+          feel free to delete it after a couple of days.
+        </div>
+      </q-card-section>
+
+      <q-card-section class="col-12 text-teal">
+        <q-btn label="OK" class="float-right q-mb-md" outline v-close-popup/>
+        <q-btn label="Referral" v-if="referral" @click="tweet" :disable="!referral_address"
+               class="float-right q-mb-md q-mr-sm" outline no-caps v-close-popup/>
+      </q-card-section>
     </q-card>
+  </q-dialog>
+  <q-dialog no-backdrop-dismiss
+            v-model="orders"
+  >
+    <q-card dark class="no-shadow dialog_card_style"
+            style="width: 700px; max-width: 80vw;background: linear-gradient(to right, #202D2E, #303428)">
+      <q-card-section class="col-12">
+        <div class="text-h6">
+          Orders
+          <q-btn icon="close" class="float-right" flat rounded dense v-close-popup></q-btn>
+        </div>
+      </q-card-section>
+      <q-separator color="secondary"></q-separator>
+      <q-card-section class="">
+        <q-scroll-area
+          style="height: 20rem;"
+        >
+          <q-list class="scroll">
+            <template v-for="order in orders_data">
+              <q-expansion-item
+                class="shadow-1 overflow-hidden q-my-sm bg-transparent"
+                style="border-radius: 30px"
+                :icon="order.order_status=='pending'?'pending_actions':'verified'"
+                :label="'Order Id - '+order.order_id"
+                header-class="text-white"
+                expand-icon-class="text-white" group="order"
+              >
+                <q-card class="bg-transparent">
+                  <q-card-section class="row q-col-gutter-sm">
+                    <div class="col-6">
+                      <q-input outlined v-model="order.order_status" dense readonly dark color="grey-5"
+                               class="full-width-right" padding="sm md" label="Order Status"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <q-input outlined v-model="order.order_file_count" dense readonly dark color="grey-5"
+                               class="full-width q-mr-sm" padding="sm md" label="Order File Count"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <q-input outlined v-model="order.order_file_size" dense readonly dark color="grey-5"
+                               class="full-width q-mr-sm" padding="sm md" label="Order File Size"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <q-input outlined v-model="order.order_service_cost" dense readonly dark color="grey-5"
+                               class="full-width q-mr-sm" padding="sm md" label="Order Service Cost"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <q-input outlined v-model="order.order_service_address" dense readonly dark color="grey-5"
+                               class="full-width q-mr-sm" padding="sm md" label="Order Service Address"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <q-input outlined v-model="order.order_commit_hash" dense readonly dark color="grey-5"
+                               class="full-width q-mr-sm" padding="sm md" label="Order Commit Hash"
+                      />
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </q-expansion-item>
+            </template>
+          </q-list>
+        </q-scroll-area>
+      </q-card-section>
+
+      <q-card-section class="col-12 text-teal">
+        <q-btn label="OK" class="float-right q-mb-md" outline v-close-popup/>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
+  <q-dialog no-backdrop-dismiss
+            v-model="load_session"
+  >
+    <q-card dark class="no-shadow dialog_card_style"
+            style="width: 500px; max-width: 80vw;background: linear-gradient(to right, #202D2E, #303428)">
+      <q-card-section class="col-12">
+        <div class="text-h6">Load Session
+
+          <q-btn icon="close" class="float-right" flat rounded dense v-close-popup></q-btn>
+        </div>
+      </q-card-section>
+      <q-separator color="secondary"></q-separator>
+      <q-card-section class="">
+        <q-input outlined v-model="session" dense dark color="grey-5"
+                 class="full-width-right" padding="sm md" label="Session"
+        />
+      </q-card-section>
+
+      <q-card-section class="col-12 text-teal">
+        <q-btn label="OK" :disable="!session" @click="loadSession" class="float-right q-mb-md" outline/>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
   </q-page>
 </template>
 
@@ -432,7 +637,15 @@ export default defineComponent({
       sns_array_data: ref([]),
       sns_array_status: ref({}),
       text: ref(""),
-      orderCommitHash: ref("")
+      orderCommitHash: ref(""),
+      faq: ref(false),
+      orders: ref(false),
+      load_session: ref(false),
+      referral: ref(false),
+      session: ref(""),
+      referral_address: ref(""),
+      orders_data: ref([]),
+      bitcoin_price: ref({})
     }
   },
   mounted() {
@@ -441,8 +654,66 @@ export default defineComponent({
     setInterval(() => {
       this.getGasFeeData()
     }, 1000 * 60);
+
+    this.getBitcoinPrice();
+    setInterval(() => {
+      this.getBitcoinPrice()
+    }, 1000 * 60);
   },
   methods: {
+    getBitcoinPrice() {
+      try {
+        const response = axios.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd').then(function (response) {
+          this.bitcoin_price = response.data;
+        }.bind(this));
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    tweet() {
+      const tweetMessage = `To.Ki is a new inscription service. https://to.ki/inscribe/ref/${this.referral_address}`;
+      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        tweetMessage
+      )}`;
+      window.open(tweetUrl);
+    },
+    getOrderData() {
+      try {
+        this.$q.loading.show({
+          message: 'Fetching Orders data. Hang on...'
+        })
+
+        const response = axios.get('https://api.inscribe.to.ki/orders/' + this.session_data).then(function (response) {
+          this.orders_data = response.data;
+          this.orders_data.sort((a, b) => b.order_id - a.order_id);
+          this.orders = true
+          this.$q.loading.hide();
+        }.bind(this)).catch(function (error) {
+          this.$q.loading.hide();
+          this.$q.notify({
+            type: 'negative',
+            message: error.response.data
+          });
+        }.bind(this));
+
+        console.log(response)
+      } catch (error) {
+        console.error(error);
+        this.$q.loading.hide();
+      }
+    },
+    loadSession() {
+      this.$q.localStorage.set("session_data", this.session);
+      this.session_data = this.session;
+      this.session = '';
+
+      this.$q.notify({
+        type: 'positive',
+        message: 'Session Loaded Successfully'
+      });
+      this.load_session = false;
+
+    },
     selectTab(tab) {
       this.fileList = [];
       this.file_data['data'] = {};
@@ -756,7 +1027,7 @@ export default defineComponent({
     },
     checkOrderStatus() {
       try {
-        this.$q.loading.show();
+        // this.$q.loading.show();
         const response = this.$api.get(
           "orders/" + this.session_data + "/" + this.order_data.order_id
         ).then(function (response) {
@@ -767,13 +1038,13 @@ export default defineComponent({
           } else {
             this.message = "Order is still being processed...";
           }
-          this.$q.loading.hide();
+          // this.$q.loading.hide();
         }.bind(this));
 
       } catch (error) {
         console.log(error);
         this.message = "Error checking order status.";
-        this.$q.loading.hide();
+        // this.$q.loading.hide();
       }
     },
   },
@@ -784,7 +1055,7 @@ export default defineComponent({
         return 0
       }
       // parseInt((this.session_data.order_vbytes_count * (this.market_data.selected_fee!='Custom'?gas_fee_data[this.market_data.selected_fee]:this.market_data.custom_fee)) * 1.25 + this.session_data.order_file_count * 25546
-      return parseInt((this.order_data.order_vbytes_count * fee) * 1.25 + this.order_data.order_file_count * 25546);
+      return parseInt((this.order_data.order_vbytes_count * fee) * 1 + this.order_data.order_file_count * 546 + 2500);
     }
   }
 })

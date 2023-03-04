@@ -33,3 +33,8 @@
   color: white;
   cursor: pointer;
 }
+
+.toolbar_style{
+  width: 1480px !important;
+  max-width: 1480px !important;
+}
