@@ -22,16 +22,21 @@
             active-icon="upload"
             :done="step > 1"
           >
-            <q-card class="bg-transparent no-shadow" style="height: 26rem;"
+            <q-card class="bg-transparent no-shadow" style="height: 408px;max-height: 408px"
                     :style="$q.screen.lt.sm?{'max-width': '20rem','min-width': '20rem'}:{'max-width': '35rem','min-width': '35rem'}">
               <q-card-section class="q-pa-none text-center" :class="$q.screen.lt.sm?'q-px-none':''">
-                <q-btn @click="selectTab('Files')" :class="selected_tab=='Files'?'active_item':''" color="secondary"
+                <q-btn @click="selectTab('Files')"
+                       :class="(selected_tab=='Files'?'active_item':'button_width')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
+                       color="secondary"
                        no-caps
                        outline size="lg" :label="'Files'"/>
-                <q-btn @click="selectTab('Sns')" :class="selected_tab=='Sns'?'active_item':''" class="q-ml-md"
+                <q-btn @click="selectTab('Sns')"
+                       :class="(selected_tab=='Sns'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
+                       class="q-ml-md "
                        color="secondary" no-caps outline size="lg" :label="'SNS'"/>
-                <q-btn disable class="q-ml-md"
-                      color="secondary" no-caps outline size="lg" :label="'Collection'">
+                <q-btn class="q-ml-md " disable
+                       :class="($q.screen.lt.sm?'button_width_mobile':' button_width')"
+                       color="secondary" no-caps outline size="lg" :label="'Collection'">
                   <q-tooltip>
                     Coming Soon
                   </q-tooltip>
@@ -43,7 +48,7 @@
                   <div class="text-subtitle1 ">Upload any file type up to 400KB and total file size of up to 100MB.
                   </div>
                 </q-card-section>
-                <q-card-section class="text-center items-center justify-center" :class="$q.screen.lt.sm?'q-px-none':''">
+                <q-card-section class="text-center items-center justify-center q-pb-sm" :class="$q.screen.lt.sm?'q-px-none':''">
                   <q-uploader class="no-shadow remove_padding" ref="file"
                               :class="$q.screen.lt.sm?'dropzone_mobile':'dropzone'"
                               url="http://localhost:4444/upload"
@@ -69,7 +74,7 @@
                         </q-item>
                       </q-list>
 
-                      <q-item-section class="drag-drop" v-if="scope.files.length==0">
+                      <q-item-section class="drag-drop" v-if="scope.files.length==0" :style="$q.screen.lt.sm?{'margin-top':'2rem !important'}:{}">
                         <q-item-label>
                           <q-icon name="cloud_upload" class="cursor-pointer" size="100px"
                                   @click="$refs.file.pickFiles()"
@@ -81,6 +86,10 @@
                     </template>
                   </q-uploader>
                 </q-card-section>
+
+                <div class="text-caption text-italic text-center">
+                  By interacting with our tools you agree to our terms of service.
+                </div>
               </div>
               <div v-if="selected_tab=='Sns'">
                 <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center">
@@ -104,8 +113,8 @@
                     </div>
                   </div>
 
-                  <div>
-                    <q-badge color="green" rounded class="q-mr-sm"/>
+                  <div class="q-mb-md">
+                    <q-badge color="" style="background-color: #00e676" rounded class="q-mr-sm"/>
                     Domain is Free
                     <q-badge color="red" rounded class="q-ml-md"/>
                     <span class="q-ml-sm">Domain is Taken</span>
@@ -144,7 +153,7 @@
             :done="step > 2" class=""
           >
             <q-card class="bg-transparent no-shadow"
-                    :style="$q.screen.lt.sm?{'max-width': '20rem','min-width': '20rem','height': '23rem'}:{'max-width': '35rem','min-width': '35rem','height': '26rem'}">
+                    :style="$q.screen.lt.sm?{'max-width': '20rem','min-width': '20rem','height': '23rem','max-height': '23rem'}:{'max-width': '35rem','min-width': '35rem','height': '26rem'}">
               <q-card-section class="row q-col-gutter-sm q-pt-none q-pb-sm" :class="$q.screen.lt.sm?'q-px-none':''">
                 <div class="col-12 text-center text-subtitle1" style="padding-top: 0px !important;">
                   Info
@@ -300,34 +309,34 @@
             done-icon="payments"
             active-icon="payments"
           >
-            <q-card class="bg-transparent no-shadow" style="height: 26rem;"
+            <q-card class="bg-transparent no-shadow" style="height: 416px;max-height: 416px"
                     :style="$q.screen.lt.sm?{'max-width': '20rem','min-width': '20rem'}:{'max-width': '35rem','min-width': '35rem'}">
               <q-card-section class="row q-col-gutter-sm">
                 <div class="col-6">
                   <q-input spellcheck="false" outlined v-model="session_data" dense readonly dark color="secondary"
-                           class="full-width-right" padding="sm md" label="Session"
+                           class="full-width-right" padding="sm md" label="Session" style="padding-top: 12px"
                   />
                 </div>
                 <div class="col-6">
                   <q-input outlined v-model="order_data.order_id" dense readonly dark color="secondary"
-                           class="full-width q-mr-sm" padding="sm md" label="Order Id"
+                           class="full-width q-mr-sm" padding="sm md" label="Order Id" style="padding-top: 12px"
                   />
                 </div>
 
-                <div class="col-12 q-mt-md custom_input" >
+                <div class="col-12 q-mt-xs custom_input" >
                   <q-input outlined v-model="market_response.serviceAddress" readonly dense dark input-class=""
-                           class="q-mr-sm" padding="sm md" @click="copyContent(market_response.serviceAddress)"
+                           class="" padding="sm md" @click="copyContent(market_response.serviceAddress)"
                            label="Bitcoin Address" color="positive"
                   >
                   </q-input>
                 </div>
-                <div class="col-6 q-mt-md custom_input">
+                <div class="col-6 q-mt-xs custom_input">
                   <q-input outlined :model-value="market_response.amount/100000000" dense readonly dark color="positive"
                            class="full-width-right" padding="sm md" label="Amount (BTC)"
                            @click="copyContent(market_response.amount/100000000)"
                   />
                 </div>
-                <div class="col-6 q-mt-md custom_input">
+                <div class="col-6 q-mt-xs custom_input">
                   <q-input outlined :model-value="market_response.amount" dense readonly dark color="positive"
                            class="full-width q-mr-sm" padding="sm md" label="Amount (Satoshi)"
                            @click="copyContent(market_response.amount)"
@@ -335,8 +344,8 @@
                 </div>
               </q-card-section>
 
-              <q-card-section v-if="message">
-                <q-card class="bg-transparent active_border row flex items-center" style="height: 12rem;">
+              <q-card-section v-if="message" class="" style="margin-top: 3px">
+                <q-card class="bg-transparent active_border row flex items-center" style="height: 10rem;">
                   <q-card-section class="text-center col-12 q-pt-lg text-h6">
                     {{ message }}
                     <br/>
@@ -351,6 +360,11 @@
                   </q-card-section>
                 </q-card>
               </q-card-section>
+
+
+              <div class="text-caption text-italic text-center q-mt-xs">
+                Uncontrollable network conditions may affect delivery time.
+              </div>
 
               <!--            <q-item class="full-width">-->
               <!--              <q-item-section>-->
@@ -381,8 +395,8 @@
                        size="lg"
                        class="q-mb-sm q-mt-sm float-left"/>
 
-                <div class="text-white full-width text-subtitle1" v-if="step === 2">
-                  <span class="" style="margin-right: 65px">Final Amount </span><br/> <span class="amount_style"><span class="text-weight-bolder">{{
+                <div class="text-white full-width text-subtitle1 q-mt-sm" v-if="step === 2">
+                  <span class="" style="margin-right: 65px">Final Amount </span><br/> <span class="amount_style"><span class="text-weight-bolder" v-if="bitcoin_price.hasOwnProperty('bitcoin')">{{
                     getAmount
                   }} Sat </span> ({{
                     parseFloat(getAmount / 100000000 * (this.bitcoin_price.bitcoin.usd)).toFixed(2)
@@ -393,7 +407,7 @@
                     :disable="(market_data.receiving_mode === 'Single Address'? !market_data.receiving_address :
                Object.values(market_data.receiving_address_multi).length==0)"
                     @click="makeTransaction" color="secondary" no-caps outline size="lg"
-                    v-if="step === 2" :label="'Next'" class="float-right" style="margin-top: -21px;"/>
+                    v-if="step === 2" :label="'Next'" class="float-right" style="margin-top: -28px;"/>
                 </div>
 
 
@@ -402,7 +416,7 @@
                        v-if="step === 1" :label="'Next'"/>
 
 
-                <q-btn v-if="step ===3 && message=='Order is still being processed...'" color="secondary" outline
+                <q-btn v-if="step ===3" color="secondary" outline
                        @click="clearData" label="Inscribe More" no-caps size="lg"
                        class="q-mr-sm q-mb-sm q-mt-sm"/>
               </div>
@@ -749,17 +763,18 @@ export default defineComponent({
       session: ref(""),
       referral_address: ref(""),
       orders_data: ref([]),
-      bitcoin_price: ref({})
+      bitcoin_price: ref({bitcoin:{usd:20000}})
     }
+  },
+  created() {
+    this.getGasFeeData();
+    this.getBitcoinPrice();
   },
   mounted() {
     this.session_data = this.$q.localStorage.getItem("session_data");
-    this.getGasFeeData();
     setInterval(() => {
       this.getGasFeeData()
     }, 1000 * 60);
-
-    this.getBitcoinPrice();
     setInterval(() => {
       this.getBitcoinPrice()
     }, 1000 * 60);
@@ -769,6 +784,12 @@ export default defineComponent({
       try {
         const response = axios.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd').then(function (response) {
           this.bitcoin_price = response.data;
+        }.bind(this)).catch(function (error) {
+          this.$q.loading.hide();
+          this.$q.notify({
+            type: 'negative',
+            message: error.response.data
+          });
         }.bind(this));
       } catch (error) {
         console.error(error);
@@ -905,7 +926,7 @@ export default defineComponent({
           const statusCode = response.status;
 
           if (statusCode === 404) {
-            span.style.color = "green";
+            span.style.color = "#00e676";
           } else if (response.ok) {
             span.style.color = "red";
           } else {

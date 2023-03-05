@@ -3,7 +3,7 @@
   border: 1px solid #26a69a;
   padding: 10px;
   margin-bottom: 10px;
-  min-height: 250px;
+  min-height: 226px;
   border-radius: 8px;
   line-height: 1.5em;
   max-height: 230px;
@@ -15,7 +15,7 @@
   border: 1px solid #ccc;
   padding: 10px;
   margin-bottom: 10px;
-  min-height: 230px;
+  min-height: 200px;
   line-height: 1.5em;
   max-height: 230px;
   overflow-y: auto;
@@ -34,6 +34,7 @@
   margin-left: -10px;
   margin-top: 5px;
   margin-right: -10px;
+  text-indent:60px;
   border-bottom: 1px #27A69A solid !important;
 }
 
@@ -69,8 +70,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 290px;
-  border: 2px dashed #ccc;
+  height: 250px;
+  border: 2px dashed #26a69a;
   border-radius: 8px;
   background-color: transparent;
   margin-bottom: 16px;
@@ -80,7 +81,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 267px;
+  height: 240px;
   border: 2px dashed #ccc;
   border-radius: 8px;
   background-color: transparent;
@@ -194,7 +195,13 @@
 .editor::after {
   content: '.sats';
   font-size: 20px;
-  float: right
+  float: right;
+}
+.editor::before {
+  content: '.sats';
+  font-size: 20px;
+  visibility: hidden;
+  float: left;
 }
 
 .editor {
@@ -239,4 +246,13 @@
 
 .q-stepper--dark.q-stepper--horizontal .q-stepper__line:before, .q-stepper--dark.q-stepper--horizontal .q-stepper__line:after{
   background-color: #26a69a !important;
+}
+
+
+.button_width{
+  width: 123px !important;
+}
+
+.button_width_mobile{
+  width: 95px !important;
 }
