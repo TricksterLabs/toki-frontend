@@ -8,15 +8,22 @@
           </q-toolbar-title>
           <q-space></q-space>
           <div>
-            <q-btn label="Inscribe" :to="'/'" flat no-caps :size="$q.screen.lt.sm?'sm':''"></q-btn>
+
             <q-btn label="Market" :to="'/market'" :class="$q.screen.lt.sm?'':'q-ml-sm'" :size="$q.screen.lt.sm?'sm':''"
-                   disable flat no-caps>
+                   disable flat>
               <q-tooltip>
                 Coming Soon
               </q-tooltip>
             </q-btn>
+            <q-btn label="Inscribe" :to="'/'" flat  :size="$q.screen.lt.sm?'sm':''"></q-btn>
             <q-btn label="Wallet" :to="'/market'" :class="$q.screen.lt.sm?'':'q-ml-sm'" :size="$q.screen.lt.sm?'sm':''"
-                   flat disable no-caps>
+                   flat disable>
+              <q-tooltip>
+                Coming Soon
+              </q-tooltip>
+            </q-btn>
+            <q-btn label="API" :to="'/'" :class="$q.screen.lt.sm?'':'q-ml-sm'" :size="$q.screen.lt.sm?'sm':''"
+                   flat disable>
               <q-tooltip>
                 Coming Soon
               </q-tooltip>
