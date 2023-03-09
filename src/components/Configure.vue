@@ -46,7 +46,7 @@
                  hide-bottom-space
                  :rules="[
                                 (v) => !!v || 'Inscription Checkpoint Steps is required',
-                                (v) => parseFloat(v) >= 0 || 'Inscription Checkpoint Steps should be above 1',
+                                (v) => parseFloat(v) >= 1 || 'Inscription Checkpoint Steps should be above 1',
                                 (v) => parseFloat(v) <= 20 || 'Inscription Checkpoint Steps should be below 20',
                               ]"
         />
@@ -124,11 +124,11 @@
               <q-input input-class="text-center text-subtitle1 text-weight-bolder" type="text"
                        hide-bottom-space outlined
                        v-model="market_data_copy.custom_fee" dense dark color="secondary"
-                       class="" padding="sm md" min="1" max="50"
+                       class="" padding="sm md" :min="gas_fee_data['economyFee']" max="50"
                        :rules="[
                                 (v) => !!v || 'Amount is required',
                                 (v) => /^\d+(\.\d{1,2})?$/.test(v) || 'Amount should have at most 2 decimal points',
-                                (v) => parseFloat(v) > 0 || 'Amount should be above 1',
+                                (v) => parseFloat(v) > gas_fee_data['economyFee'] || 'Amount should be above '+gas_fee_data['economyFee'],
                                 (v) => parseFloat(v) < 50 || 'Amount should be below 50',
                               ]"
               />
@@ -208,6 +208,9 @@ export default defineComponent({
     updateCheckpoint() {
       if (this.market_data_copy.order_transaction_mode === 'Batched') {
         this.market_data_copy.inscription_checkpoint_steps = 1
+      }
+      if (this.market_data_copy.order_transaction_mode === 'Chained') {
+        this.market_data_copy.inscription_checkpoint_steps = 20
       }
     }
   },

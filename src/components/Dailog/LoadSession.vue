@@ -1,7 +1,7 @@
 <template>
 
   <q-dialog
-    :model-value="load_session"
+    :model-value="load_session" @hide="clearData"
   >
     <q-card dark class="no-shadow dialog_card_style"
             style="width: 500px; max-width: 80vw;background: linear-gradient(to right, #202D2E, #303428)">
