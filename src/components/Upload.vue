@@ -257,7 +257,7 @@ export default defineComponent({
           "p": "brc-20",
           "op": "mint",
           "tick": "meme",
-          "amt": 1
+          "amt": "1"
         };
         const rawData = Buffer.from(JSON.stringify(dict, null, 2));
         this.file_data['data'][i + "_meme" + '.txt'] = {
@@ -276,7 +276,7 @@ export default defineComponent({
           "p": "brc-20",
           "op": "mint",
           "tick": "ordi",
-          "amt": 1000
+          "amt": "1000"
         };
         const rawData = Buffer.from(JSON.stringify(dict, null, 2));
         this.file_data['data'][i + "_ordi" + '.txt'] = {
