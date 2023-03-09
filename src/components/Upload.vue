@@ -6,7 +6,7 @@
              :class="(selected_tab==='Files'?'active_item':'button_width')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
              color="secondary"
              no-caps
-             outline size="lg" :label="'Files'"/>
+             outline size="lg" :label="'FILES'"/>
       <q-btn @click="selectTab('Sns')"
              :class="(selected_tab==='Sns'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
              class="q-ml-md "
@@ -96,23 +96,31 @@
           <q-badge color="red" rounded class="q-ml-md"/>
           <span class="q-ml-sm">Domain is Taken</span>
           <q-badge color="yellow" rounded class="q-ml-md"/>
-          <span class="q-ml-sm">Could not retrieve data</span>
+          <span class="q-ml-sm">API error</span>
         </div>
         <div class="text-caption text-italic">
-          Data is provided by a third party, accuracy is not guaranteed
+          Data is provided by a third party, accuracy is not guaranteed.
         </div>
       </q-card-section>
     </div>
     <div v-if="selected_tab==='BRC20'">
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center">
-        <div class="text-subtitle1 ">Add your meme and ordi</div>
+        <div class="text-subtitle1 ">Choose the token file quantity to inscribe.</div>
       </q-card-section>
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''"
                       class="text-center items-center q-pt-none justify-center">
 
         <div>
           <q-badge color="secondary" class="">
-            Meme
+            ordi (1000 per)
+          </q-badge>
+
+          <q-slider v-model="ordi" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="ordiInput" switch-label-side/>
+        </div>
+        <div>
+          <q-badge color="secondary" class="q-mt-xl">
+            meme (1 per)
           </q-badge>
 
           <q-slider v-model="meme" :min="0" :max="100" color="secondary" label-always
@@ -120,14 +128,38 @@
         </div>
         <div>
           <q-badge color="secondary" class="q-mt-xl">
-            Ordi
+            punk (1 per)
           </q-badge>
 
-          <q-slider v-model="ordi" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="ordiInput" switch-label-side/>
+          <q-slider v-model="punk" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="punkInput" switch-label-side/>
+        </div>
+        <div>
+          <q-badge color="secondary" class="q-mt-xl">
+            rock (1 per)
+          </q-badge>
+
+          <q-slider v-model="rock" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="rockInput" switch-label-side/>
+        </div>
+        <div>
+          <q-badge color="secondary" class="q-mt-xl">
+            pepe (420 per)
+          </q-badge>
+
+          <q-slider v-model="pepe" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="pepeInput" switch-label-side/>
+        </div>
+        <div>
+          <q-badge color="secondary" class="q-mt-xl">
+            kek (69 per)
+          </q-badge>
+
+          <q-slider v-model="kek" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="kekInput" switch-label-side/>
         </div>
         <div class="text-caption text-italic q-mt-xl">
-          Data is provided by a third party, accuracy is not guaranteed
+          BRC20 tokens are experimental. We also do not check if the deployment limit has been reached. Please use at your own risk.
         </div>
       </q-card-section>
     </div>
@@ -147,8 +179,12 @@ export default defineComponent({
       file_data: ref({data: {}}),
       fileList: ref([]),
       text: ref(""),
-      meme: ref(0),
       ordi: ref(0),
+      meme: ref(0),
+      punk: ref(0),
+      rock: ref(0),
+      pepe: ref(0),
+      kek: ref(0),
       file_data_display: ref({}),
       dropzoneText: 'Drag and drop files here or click to select files',
     }
@@ -247,25 +283,6 @@ export default defineComponent({
 
       this.text = event.currentTarget;
     },
-    memeInput() {
-      Object.keys(this.file_data['data'])
-        .filter(key => key.includes("meme"))
-        .forEach(key => delete this.file_data['data'][key]);
-
-      for (let i = 1; i <= this.meme; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "meme",
-          "amt": "1"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_meme" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
-    },
     ordiInput() {
       Object.keys(this.file_data['data'])
         .filter(key => key.includes("ordi"))
@@ -279,7 +296,102 @@ export default defineComponent({
           "amt": "1000"
         };
         const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ordi" + '.txt'] = {
+        this.file_data['data'][i + "_ord" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
+    memeInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("meme"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.meme; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "meme",
+          "amt": "1"
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ord" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
+    punkInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("punk"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.punk; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "punk",
+          "amt": "1"
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ord" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
+    rockInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("rock"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.rock; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "rock",
+          "amt": "1"
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ord" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
+    pepeInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("pepe"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.pepe; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "pepe",
+          "amt": "420"
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ord" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
+    kekInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("kek"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.kek; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "kek",
+          "amt": "69"
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ord" + '.txt'] = {
           contentType: 'text/plain;charset=utf-8',
           rawData: rawData,
         };

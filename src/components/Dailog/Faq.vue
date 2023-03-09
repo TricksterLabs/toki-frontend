@@ -49,32 +49,62 @@
             What are your fees?
           </div>
           <div class="text-caption text-secondary">
-            We charge 0.00025 BTC per file and 25% of the network fees selected.
+            We charge 0.00020 BTC per file and 25% of the network fees selected.
+          </div>
+          <div class="text-subtitle1 q-mt-md">
+            What is FILES?
+          </div>
+          <div class="text-caption text-secondary">
+            It's the default mode to upload your files and inscribe them onto the blockchain in the next step.
+          </div>
+          <div class="text-subtitle1 q-mt-md">
+            What is SNS?
+          </div>
+          <div class="text-caption text-secondary">
+            SNS mode is the default domain name system on bitcoin. You are able to search for available domains and easily inscribe them in the next steps.
+          </div>
+          <div class="text-subtitle1 q-mt-md">
+            What is BRC20?
+          </div>
+          <div class="text-caption text-secondary">
+            BRC20 is an experiment to create a standard for bitcoin fungible tokens. We abstract the complexity for you to easily inscribe the chosen quantity in the next steps.
           </div>
           <div class="text-subtitle1 q-mt-md">
             What is "Chained" transaction type?
           </div>
           <div class="text-caption text-secondary">
-            Chained transaction type is automatically selected by our system if you are inscribing less (and
-            including)
-            than 20 files under 400kb total size. All the inscription transactions are sent immediately after your
-            payment
-            is in the mempool without waiting for confirmation and without any extra commit transaction unlike the
-            official Ordinal Node allows ensuring the absolutely fastest processing time. Furthermore chaining them
-            together and adding the gas fee on the last transaction almost guarantees they will be processed at the
-            same
-            time and in turn receive ordinals with consecutive IDs.
+            Chained transactions are broadcasted in steps of 20 (or less if selected) and are connected to each other. The gas fee is added on the last transaction of the last step. This is the recommended transaction mode.
+            <div class="text-caption text-secondary">
+            - Inscription IDs are usually consecutive
+            </div>
+            <div class="text-caption text-secondary">
+              - Slightly cheaper than batched mode
+            </div>
+            <div class="text-caption text-secondary">
+              - Faster processing time when under 40 transactions than batched mode
+            </div>
+            <div class="text-caption text-secondary">
+              - Non-automatic refunds if wrong amount is sent
+            </div>
           </div>
           <div class="text-subtitle1 q-mt-md">
             What is "Batched" transaction type?
           </div>
           <div class="text-caption text-secondary">
-            Batched transaction type is automatically selected by our system if you don't qualify for a "Chained"
-            transaction type. This has an extra commit transaction that sends the funds to multiple reveal addresses.
-            After the commit transaction is confirmed all of the reveal transactions are sent at once. This mode
-            allows us
-            to broadcast tens of thousands of transactions at the same time, all connected to the same parent
-            transaction.
+            Batched transactions are broadcasted in 2 steps. First step is the commit which splits the funds into multiple reveal addresses. Second step emmits the reveal tranasctions all at once.
+
+          </div>
+          <div class="text-caption text-secondary">
+            - Inscription IDs are not consecutive
+          </div>
+          <div class="text-caption text-secondary">
+            - Slightly more expensive than batched mode
+          </div>
+          <div class="text-caption text-secondary">
+            - Faster processing time when over 40 transactions than chained mode
+          </div>
+          <div class="text-caption text-secondary">
+            - Automatic refunds if wrong amount is sent under 10 000 satoshis
           </div>
 
           <div class="text-subtitle1 q-mt-md">
@@ -145,7 +175,7 @@ export default defineComponent({
   emits:['update_faq'],
   methods:{
     tweet() {
-      const tweetMessage = `To.Ki is a new inscription service. https://to.ki/inscribe/ref/${this.referral_address}`;
+      const tweetMessage = `toki is redefining the bitcoin ordinals scene with their never-before seen inscription features. Check them out https://to.ki/inscribe/ref/${this.referral_address} #bitcoin #ordinals`;
       const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
         tweetMessage
       )}`;

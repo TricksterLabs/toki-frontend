@@ -24,25 +24,25 @@
       <div class="col-6">
         <q-input outlined
                  v-model="market_data_copy.inscription_padding" dense dark color="secondary"
-                 class="full-width q-mr-sm" padding="sm md" label="Inscription Padding" min="546" max="10000"
+                 class="full-width q-mr-sm" padding="sm md" label="Inscription Padding" min="546" max="546"
                  hide-bottom-space
                  :rules="[
                                 (v) => !!v || 'Inscription Padding is required',
                                 (v) => v >= 546 || 'Inscription Padding should be above 546',
-                                (v) => v <= 10000 || 'Inscription Padding should be below 10000',
+                                (v) => v <= 546 || 'Inscription Padding should be below 546',
                               ]"
         />
       </div>
       <div class="col-6">
         <q-input outlined :model-value="order_data.order_file_count+'/'+order_data.order_file_size" dense
                  readonly dark color="secondary"
-                 class="full-width q-mr-sm" padding="sm md" label="File Count"
+                 class="full-width q-mr-sm" padding="sm md" label="File Count / Total Size (Bytes)"
         />
       </div>
       <div class="col-6">
         <q-input outlined :disable="market_data_copy.order_transaction_mode=='Batched'"
                  v-model.number="market_data_copy.inscription_checkpoint_steps" dense dark color="secondary"
-                 class="full-width q-mr-sm" padding="sm md" label="Inscription Checkpoint Steps" min="1" max="25"
+                 class="full-width q-mr-sm" padding="sm md" label="Checkpoint Steps" min="1" max="25"
                  hide-bottom-space
                  :rules="[
                                 (v) => !!v || 'Inscription Checkpoint Steps is required',

@@ -32,7 +32,7 @@
             <q-btn type="a" rounded dense href="" target="__blank" :size="$q.screen.lt.sm?'sm':'md'"
                    icon="fab fa-discord" :class="$q.screen.lt.sm?'q-mr-sm q-ml-sm':'q-mr-md q-ml-lg'" flat
                    color="secondary"></q-btn>
-            <q-btn type="a" rounded dense href="" target="__blank" :size="$q.screen.lt.sm?'sm':'md'"
+            <q-btn type="a" rounded dense href="https://twitter.com/tokiHash" target="https://twitter.com/tokiHash" :size="$q.screen.lt.sm?'sm':'md'"
                    icon="fab fa-twitter" :class="$q.screen.lt.sm?'':'q-mr-sm'"
                    flat color="secondary"></q-btn>
           </div>
@@ -73,7 +73,7 @@
              @click="privacy_policy=true">Privacy Policy</a>
         </q-card-section>
         <q-card-section class="text-center q-pa-none text-weight-bolder">
-          ToKi @ All Credits Reserved
+          toki © 2023 All Rights Reserved
         </q-card-section>
       </q-card>
     </q-footer>
