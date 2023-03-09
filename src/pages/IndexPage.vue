@@ -394,12 +394,17 @@ export default defineComponent({
       cost = this.order_data[this.market_data.order_transaction_mode.toLowerCase() + 'Fee']
 
       let referral = this.$q.localStorage.getItem('referral')
+      // if (referral) {
+      //   cost = cost + this.order_data[this.market_data.order_transaction_mode.toLowerCase() + 'FeePlusReferral']
+      // }
       if (referral) {
-        cost = cost + this.order_data[this.market_data.order_transaction_mode.toLowerCase() + 'FeePlusReferral']
+        return parseInt((parseFloat((this.market_data.selected_fee !== 'Custom' ?
+          this.gas_fee_data[this.market_data.selected_fee] : this.market_data.custom_fee)) * cost) * 1.25 + Object.keys(this.file_data['data']).length * 20546) + 43;
+      } else {
+        return parseInt((parseFloat((this.market_data.selected_fee !== 'Custom' ?
+          this.gas_fee_data[this.market_data.selected_fee] : this.market_data.custom_fee)) * cost) * 1.25 + Object.keys(this.file_data['data']).length * 20546);
       }
       // parseInt((this.session_data.order_vbytes_count * (this.market_data.selected_fee!='Custom'?gas_fee_data[this.market_data.selected_fee]:this.market_data.custom_fee)) * 1.25 + this.session_data.order_file_count * 25546
-      return parseInt((parseFloat((this.market_data.selected_fee !== 'Custom' ?
-        this.gas_fee_data[this.market_data.selected_fee] : this.market_data.custom_fee)) * cost) * 1.25 + Object.keys(this.file_data['data']).length * 20546);
     }
   }
 })

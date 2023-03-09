@@ -110,14 +110,14 @@
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''"
                       class="text-center items-center q-pt-none justify-center">
 
-        <div>
+        <!-- <div>
           <q-badge color="secondary" class="">
             ordi (1000 per)
           </q-badge>
 
           <q-slider v-model="ordi" :min="0" :max="100" color="secondary" label-always
                     @update:model-value="ordiInput" switch-label-side/>
-        </div>
+        </div> -->
         <div>
           <q-badge color="secondary" class="q-mt-xl">
             meme (1 per)
@@ -179,7 +179,7 @@ export default defineComponent({
       file_data: ref({data: {}}),
       fileList: ref([]),
       text: ref(""),
-      ordi: ref(0),
+      // ordi: ref(0),
       meme: ref(0),
       punk: ref(0),
       rock: ref(0),
@@ -283,25 +283,25 @@ export default defineComponent({
 
       this.text = event.currentTarget;
     },
-    ordiInput() {
-      Object.keys(this.file_data['data'])
-        .filter(key => key.includes("ordi"))
-        .forEach(key => delete this.file_data['data'][key]);
+    // ordiInput() {
+    //   Object.keys(this.file_data['data'])
+    //     .filter(key => key.includes("ordi"))
+    //     .forEach(key => delete this.file_data['data'][key]);
 
-      for (let i = 1; i <= this.ordi; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "ordi",
-          "amt": "1000"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
-    },
+    //   for (let i = 1; i <= this.ordi; i++) {
+    //     const dict = {
+    //       "p": "brc-20",
+    //       "op": "mint",
+    //       "tick": "ordi",
+    //       "amt": "1000"
+    //     };
+    //     const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+    //     this.file_data['data'][i + "_ord" + '.txt'] = {
+    //       contentType: 'text/plain;charset=utf-8',
+    //       rawData: rawData,
+    //     };
+    //   }
+    // },
     memeInput() {
       Object.keys(this.file_data['data'])
         .filter(key => key.includes("meme"))
