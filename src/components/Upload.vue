@@ -11,13 +11,18 @@
              :class="(selected_tab==='Sns'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
              class="q-ml-md "
              color="secondary" no-caps outline size="lg" :label="'SNS'"/>
-<!--      <q-btn class="q-ml-md " disable-->
-<!--             :class="($q.screen.lt.sm?'button_width_mobile':' button_width')"-->
-<!--             color="secondary" no-caps outline size="lg" :label="'Collection'">-->
-<!--        <q-tooltip>-->
-<!--          Coming Soon-->
-<!--        </q-tooltip>-->
-<!--      </q-btn>-->
+
+      <q-btn @click="selectTab('BRC20')"
+             :class="(selected_tab==='BRC20'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
+             class="q-ml-md "
+             color="secondary" no-caps outline size="lg" :label="'BRC20'"/>
+      <!--      <q-btn class="q-ml-md " disable-->
+      <!--             :class="($q.screen.lt.sm?'button_width_mobile':' button_width')"-->
+      <!--             color="secondary" no-caps outline size="lg" :label="'Collection'">-->
+      <!--        <q-tooltip>-->
+      <!--          Coming Soon-->
+      <!--        </q-tooltip>-->
+      <!--      </q-btn>-->
     </q-card-section>
 
     <div v-if="selected_tab==='Files'">
@@ -98,6 +103,34 @@
         </div>
       </q-card-section>
     </div>
+    <div v-if="selected_tab==='BRC20'">
+      <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center">
+        <div class="text-subtitle1 ">Add your meme and ordi</div>
+      </q-card-section>
+      <q-card-section :class="$q.screen.lt.sm?'q-px-none':''"
+                      class="text-center items-center q-pt-none justify-center">
+
+        <div>
+          <q-badge color="secondary" class="">
+            Meme
+          </q-badge>
+
+          <q-slider v-model="meme" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="memeInput" switch-label-side/>
+        </div>
+        <div>
+          <q-badge color="secondary" class="q-mt-xl">
+            Ordi
+          </q-badge>
+
+          <q-slider v-model="ordi" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="ordiInput" switch-label-side/>
+        </div>
+        <div class="text-caption text-italic q-mt-xl">
+          Data is provided by a third party, accuracy is not guaranteed
+        </div>
+      </q-card-section>
+    </div>
   </q-card>
 </template>
 
@@ -114,11 +147,13 @@ export default defineComponent({
       file_data: ref({data: {}}),
       fileList: ref([]),
       text: ref(""),
+      meme: ref(0),
+      ordi: ref(0),
       file_data_display: ref({}),
       dropzoneText: 'Drag and drop files here or click to select files',
     }
   },
-  props:['clear_inner_child_data'],
+  props: ['clear_inner_child_data'],
   methods: {
     selectTab(tab) {
       this.fileList = [];
@@ -211,6 +246,44 @@ export default defineComponent({
       }
 
       this.text = event.currentTarget;
+    },
+    memeInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("meme"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.meme; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "meme",
+          "amt": 1
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_meme" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
+    ordiInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("ordi"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.ordi; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "ordi",
+          "amt": 1000
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ordi" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
     },
     handleAdded(files) {
       this.addFiles(files);

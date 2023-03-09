@@ -136,7 +136,7 @@
 
     <faq :faq="faq" @update_faq="faq=$event"></faq>
     <orders :orders="orders" @update_orders="orders=$event" :orders_data="orders_data"></orders>
-    <load-session @update_session="load_session=$event" :load_session="load_session"></load-session>
+    <load-session @update_session="load_session=$event;updateSession()" :load_session="load_session"></load-session>
   </q-page>
 </template>
 
@@ -203,6 +203,9 @@ export default defineComponent({
     }, 1000 * 60);
   },
   methods: {
+    updateSession(){
+      this.session_data = this.$q.localStorage.getItem("session_data");
+    },
     getBitcoinPrice() {
       try {
         const response = axios.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd').then(function (response) {

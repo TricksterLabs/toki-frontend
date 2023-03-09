@@ -81,7 +81,7 @@
       </q-card-section>
 
       <q-card-section class="col-12 text-teal">
-        <q-btn label="OK" class="float-right q-mb-md" outline v-close-popup/>
+        <q-btn label="OK" class="float-right q-mb-md" @click="clearData" outline v-close-popup/>
       </q-card-section>
     </q-card>
   </q-dialog>
