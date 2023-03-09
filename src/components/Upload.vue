@@ -105,7 +105,7 @@
     </div>
     <div v-if="selected_tab==='BRC20'">
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center">
-        <div class="text-subtitle1 ">Choose the token file quantity to inscribe.</div>
+        <div class="text-subtitle1 ">Choose the token file quantity to inscribe. (Check the file count in the next step, make sure it matches, there is a known bug on the BRC20 component)</div>
       </q-card-section>
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''"
                       class="text-center items-center q-pt-none justify-center">
