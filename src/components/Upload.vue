@@ -99,7 +99,7 @@
           <span class="q-ml-sm">API error</span>
         </div>
         <div class="text-caption text-italic">
-          Data is provided by a third party, accuracy is not guaranteed.
+          Data is provided by a third party, accuracy is not guaranteed. Be aware about case sensitivty.
         </div>
       </q-card-section>
     </div>
@@ -125,6 +125,14 @@
 
           <q-slider v-model="meme" :min="0" :max="100" color="secondary" label-always
                     @update:model-value="memeInput" switch-label-side/>
+        </div>
+        <div>
+          <q-badge color="secondary" class="q-mt-xl">
+            doge (4200 per)
+          </q-badge>
+
+          <q-slider v-model="doge" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="dogeInput" switch-label-side/>
         </div>
         <div>
           <q-badge color="secondary" class="q-mt-xl">
@@ -181,6 +189,7 @@ export default defineComponent({
       text: ref(""),
       // ordi: ref(0),
       meme: ref(0),
+      doge: ref(0),
       punk: ref(0),
       rock: ref(0),
       pepe: ref(0),
@@ -313,6 +322,25 @@ export default defineComponent({
           "op": "mint",
           "tick": "meme",
           "amt": "1"
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ord" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
+    dogeInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("doge"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.doge; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "doge",
+          "amt": "4200"
         };
         const rawData = Buffer.from(JSON.stringify(dict, null, 2));
         this.file_data['data'][i + "_ord" + '.txt'] = {
