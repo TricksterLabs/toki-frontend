@@ -144,7 +144,7 @@
         </div>
         <div>
           <q-badge color="secondary" class="q-mt-xl">
-            pepe (420 per)
+            pepe (1000 per)
           </q-badge>
 
           <q-slider v-model="pepe" :min="0" :max="100" color="secondary" label-always
@@ -369,7 +369,7 @@ export default defineComponent({
           "p": "brc-20",
           "op": "mint",
           "tick": "pepe",
-          "amt": "420"
+          "amt": "1000"
         };
         const rawData = Buffer.from(JSON.stringify(dict, null, 2));
         this.file_data['data'][i + "_ord" + '.txt'] = {
