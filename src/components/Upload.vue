@@ -144,6 +144,14 @@
         </div>
         <div>
           <q-badge color="secondary" class="q-mt-xl">
+            fren (1 per)
+          </q-badge>
+
+          <q-slider v-model="meme" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="frenInput" switch-label-side/>
+        </div>
+        <div>
+          <q-badge color="secondary" class="q-mt-xl">
             punk (1 per)
           </q-badge>
 
@@ -199,6 +207,7 @@ export default defineComponent({
       pepeMoji: ref(0),
       depp: ref(0),
       meme: ref(0),
+      fren: ref(0),
       punk: ref(0),
       rock: ref(0),
       pepe: ref(0),
@@ -215,6 +224,7 @@ export default defineComponent({
       this.pepeMoji = 0;
       this.depp = 0;
       this.meme = 0;
+      this.fren = 0;
       this.punk = 0;
       this.rock = 0;
       this.pepe = 0;
@@ -384,6 +394,25 @@ export default defineComponent({
         };
       }
     },
+    frenInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("fren"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.fren; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "fren",
+          "amt": "1"
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ord" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
     punkInput() {
       Object.keys(this.file_data['data'])
         .filter(key => key.includes("punk"))
@@ -505,6 +534,7 @@ export default defineComponent({
         this.pepeMoji = 0
         this.depp = 0
         this.meme = 0
+        this.fren = 0
         this.punk = 0
         this.rock = 0
         this.pepe = 0
