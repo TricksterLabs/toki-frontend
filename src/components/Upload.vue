@@ -99,13 +99,13 @@
           <span class="q-ml-sm">API error</span>
         </div>
         <div class="text-caption text-italic">
-          Data is provided by a third party, accuracy is not guaranteed. Be aware about case sensitivty.
+          Data is provided by a third party, accuracy is not guaranteed.
         </div>
       </q-card-section>
     </div>
     <div v-if="selected_tab==='BRC20'">
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center">
-        <div class="text-subtitle1 ">Choose the token file quantity to inscribe. (Check the file count in the next step, make sure it matches, there is a known bug on the BRC20 component)</div>
+        <div class="text-subtitle1 ">Choose the token file quantity to inscribe.</div>
       </q-card-section>
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''"
                       class="text-center items-center q-pt-none justify-center">
@@ -120,19 +120,27 @@
         </div> -->
         <div>
           <q-badge color="secondary" class="q-mt-xl">
+            🐸🐸 (300 per)
+          </q-badge>
+
+          <q-slider v-model="pepeMoji" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="pepeMojiInput" switch-label-side/>
+        </div>
+        <div>
+          <q-badge color="secondary" class="q-mt-xl">
+            depp (1000 per)
+          </q-badge>
+
+          <q-slider v-model="depp" :min="0" :max="100" color="secondary" label-always
+                    @update:model-value="deppInput" switch-label-side/>
+        </div>
+        <div>
+          <q-badge color="secondary" class="q-mt-xl">
             meme (1 per)
           </q-badge>
 
           <q-slider v-model="meme" :min="0" :max="100" color="secondary" label-always
                     @update:model-value="memeInput" switch-label-side/>
-        </div>
-        <div>
-          <q-badge color="secondary" class="q-mt-xl">
-            doge (4200 per)
-          </q-badge>
-
-          <q-slider v-model="doge" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="dogeInput" switch-label-side/>
         </div>
         <div>
           <q-badge color="secondary" class="q-mt-xl">
@@ -152,7 +160,7 @@
         </div>
         <div>
           <q-badge color="secondary" class="q-mt-xl">
-            pepe (1000 per)
+            pepe (420 per)
           </q-badge>
 
           <q-slider v-model="pepe" :min="0" :max="100" color="secondary" label-always
@@ -188,8 +196,9 @@ export default defineComponent({
       fileList: ref([]),
       text: ref(""),
       // ordi: ref(0),
+      pepeMoji: ref(0),
+      depp: ref(0),
       meme: ref(0),
-      doge: ref(0),
       punk: ref(0),
       rock: ref(0),
       pepe: ref(0),
@@ -203,6 +212,13 @@ export default defineComponent({
     selectTab(tab) {
       this.fileList = [];
       this.file_data['data'] = {};
+      this.pepeMoji = 0;
+      this.depp = 0;
+      this.meme = 0;
+      this.punk = 0;
+      this.rock = 0;
+      this.pepe = 0;
+      this.kek = 0;
       this.selected_tab = tab
     },
     async processInput(event) {
@@ -311,6 +327,44 @@ export default defineComponent({
     //     };
     //   }
     // },
+    pepeMojiInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("pepeMoji"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.pepeMoji; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "🐸🐸",
+          "amt": "300"
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ord" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
+    deppInput() {
+      Object.keys(this.file_data['data'])
+        .filter(key => key.includes("depp"))
+        .forEach(key => delete this.file_data['data'][key]);
+
+      for (let i = 1; i <= this.depp; i++) {
+        const dict = {
+          "p": "brc-20",
+          "op": "mint",
+          "tick": "depp",
+          "amt": "1000"
+        };
+        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+        this.file_data['data'][i + "_ord" + '.txt'] = {
+          contentType: 'text/plain;charset=utf-8',
+          rawData: rawData,
+        };
+      }
+    },
     memeInput() {
       Object.keys(this.file_data['data'])
         .filter(key => key.includes("meme"))
@@ -322,25 +376,6 @@ export default defineComponent({
           "op": "mint",
           "tick": "meme",
           "amt": "1"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
-    },
-    dogeInput() {
-      Object.keys(this.file_data['data'])
-        .filter(key => key.includes("doge"))
-        .forEach(key => delete this.file_data['data'][key]);
-
-      for (let i = 1; i <= this.doge; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "doge",
-          "amt": "4200"
         };
         const rawData = Buffer.from(JSON.stringify(dict, null, 2));
         this.file_data['data'][i + "_ord" + '.txt'] = {
@@ -397,7 +432,7 @@ export default defineComponent({
           "p": "brc-20",
           "op": "mint",
           "tick": "pepe",
-          "amt": "1000"
+          "amt": "420"
         };
         const rawData = Buffer.from(JSON.stringify(dict, null, 2));
         this.file_data['data'][i + "_ord" + '.txt'] = {
@@ -467,6 +502,13 @@ export default defineComponent({
     clear_inner_child_data: function () {
       if (this.clear_inner_child_data) {
         this.file_data = {data: {}};
+        this.pepeMoji = 0
+        this.depp = 0
+        this.meme = 0
+        this.punk = 0
+        this.rock = 0
+        this.pepe = 0
+        this.kek = 0
         this.$emit('update_clear_inner_child_data', false)
       }
     }
