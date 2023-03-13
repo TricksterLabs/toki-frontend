@@ -137,7 +137,7 @@
                    hide-bottom-space type="number" id="myNumberInput"
                    :rules="[
                         val => Number.isInteger(val) || 'Amount must be an integer',
-                        val => val > 1 || 'Amount must be greater than 1'
+                        val => val >= 1 || 'Amount must be greater than 1'
                       ]"
           />
 
@@ -169,7 +169,7 @@
                    hide-bottom-space type="number"
                    :rules="[
                         val => Number.isInteger(val) || 'Amount must be an integer',
-                        val => val > 1 || 'Amount must be greater than 1'
+                        val => val >= 1 || 'Amount must be greater than 1'
                       ]"
           />
 
@@ -179,7 +179,7 @@
                    hide-bottom-space type="number"
                    :rules="[
                         val => Number.isInteger(val) || 'Amount must be an integer',
-                        val => val > 1 || 'Amount must be greater than 1',
+                        val => val >= 1 || 'Amount must be greater than 1',
                         val => val < deploy_amount || 'Limit per mint must be lower than deploy amount'
                       ]"
           />
