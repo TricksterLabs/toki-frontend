@@ -107,83 +107,85 @@
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center">
         <div class="text-subtitle1 ">Choose the token file quantity to inscribe.</div>
       </q-card-section>
+      <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center q-pa-none q-pb-xs">
+        <q-radio v-model="mint_type" checked-icon="task_alt" dark unchecked-icon="panorama_fish_eye" val="mint"
+                 color="info" @update:model-value="removeDeployData"
+                 size="50px"
+                 label="Mint"/>
+        <q-radio v-model="mint_type" checked-icon="task_alt" dark unchecked-icon="panorama_fish_eye" val="deploy"
+                 color="info"
+                 size="50px"
+                 label="Deploy"/>
+
+      </q-card-section>
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''"
                       class="text-center items-center q-pt-none justify-center">
+        <div v-if="mint_type==='mint'">
+          <q-input outlined
+                   v-model="tick" dense dark color="secondary"
+                   class="full-width q-mr-sm" padding="sm md" label="Tick"
+                   hide-bottom-space @update:model-value="removeFileData"
+                   :rules="[
+                    val => val.length > 1 || 'Tick should be greater than 1 character',
+                    val => val.length < 64 || 'Tick should be less than 64 characters'
+                  ]"
+          />
 
-        <!-- <div>
-          <q-badge color="secondary" class="">
-            ordi (1000 per)
-          </q-badge>
+          <q-input outlined
+                   v-model.number="tick_amount" dense dark color="secondary"
+                   class="full-width q-mr-sm q-mt-sm" padding="sm md" label="Amount"
+                   hide-bottom-space type="number" id="myNumberInput"
+                   :rules="[
+                        val => Number.isInteger(val) || 'Amount must be an integer',
+                        val => val > 1 || 'Amount must be greater than 1'
+                      ]"
+          />
 
-          <q-slider v-model="ordi" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="ordiInput" switch-label-side/>
-        </div> -->
-        <div>
-          <q-badge color="secondary" class="q-mt-xl">
-            🐸🐸 (300 per)
-          </q-badge>
+          <div class="q-mt-sm">
+            <q-badge color="secondary" class="">
+              Repeat Mint
+            </q-badge>
 
-          <q-slider v-model="pepeMoji" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="pepeMojiInput" switch-label-side/>
+            <q-slider v-model="tick_repeat" :min="0" :disable="!tick && !tick_amount || tick.length !== 4" :max="100"
+                      color="secondary"
+                      @update:model-value="genericBRCInput" label-always switch-label-side/>
+          </div>
         </div>
-        <div>
-          <q-badge color="secondary" class="q-mt-xl">
-            depp (1000 per)
-          </q-badge>
 
-          <q-slider v-model="depp" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="deppInput" switch-label-side/>
-        </div>
-        <div>
-          <q-badge color="secondary" class="q-mt-xl">
-            meme (1 per)
-          </q-badge>
+        <div v-if="mint_type==='deploy'">
+          <q-input outlined
+                   v-model="deploy_tick" dense dark color="secondary"
+                   class="full-width q-mr-sm" padding="sm md" label="Tick"
+                   hide-bottom-space @update:model-value="genericDeployInput"
+                   :rules="[
+                    val => val.length > 1 || 'Tick should be greater than 1 character',
+                    val => val.length < 64 || 'Tick should be less than 64 characters'
+                  ]"
+          />
 
-          <q-slider v-model="meme" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="memeInput" switch-label-side/>
-        </div>
-        <div>
-          <q-badge color="secondary" class="q-mt-xl">
-            fren (1 per)
-          </q-badge>
+          <q-input outlined @update:model-value="genericDeployInput"
+                   v-model.number="deploy_amount" dense dark color="secondary"
+                   class="full-width q-mr-sm q-mt-sm" padding="sm md" label="Total Supply"
+                   hide-bottom-space type="number"
+                   :rules="[
+                        val => Number.isInteger(val) || 'Amount must be an integer',
+                        val => val > 1 || 'Amount must be greater than 1'
+                      ]"
+          />
 
-          <q-slider v-model="meme" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="frenInput" switch-label-side/>
-        </div>
-        <div>
-          <q-badge color="secondary" class="q-mt-xl">
-            punk (1 per)
-          </q-badge>
-
-          <q-slider v-model="punk" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="punkInput" switch-label-side/>
-        </div>
-        <div>
-          <q-badge color="secondary" class="q-mt-xl">
-            rock (1 per)
-          </q-badge>
-
-          <q-slider v-model="rock" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="rockInput" switch-label-side/>
-        </div>
-        <div>
-          <q-badge color="secondary" class="q-mt-xl">
-            pepe (420 per)
-          </q-badge>
-
-          <q-slider v-model="pepe" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="pepeInput" switch-label-side/>
-        </div>
-        <div>
-          <q-badge color="secondary" class="q-mt-xl">
-            kek (69 per)
-          </q-badge>
-
-          <q-slider v-model="kek" :min="0" :max="100" color="secondary" label-always
-                    @update:model-value="kekInput" switch-label-side/>
+          <q-input outlined @update:model-value="genericDeployInput"
+                   v-model.number="deploy_limit" dense dark color="secondary"
+                   class="full-width q-mr-sm q-mt-sm" padding="sm md" label="Limit Per Mint"
+                   hide-bottom-space type="number"
+                   :rules="[
+                        val => Number.isInteger(val) || 'Amount must be an integer',
+                        val => val > 1 || 'Amount must be greater than 1',
+                        val => val < deploy_amount || 'Limit per mint must be lower than deploy amount'
+                      ]"
+          />
         </div>
         <div class="text-caption text-italic q-mt-xl">
-          BRC20 tokens are experimental. We also do not check if the deployment limit has been reached. Please use at your own risk.
+          BRC20 tokens are experimental. Please use at your own risk.
         </div>
       </q-card-section>
     </div>
@@ -200,6 +202,13 @@ export default defineComponent({
   setup() {
     return {
       selected_tab: ref('Files'),
+      tick: ref(''),
+      deploy_tick: ref(''),
+      mint_type: ref('mint'),
+      tick_amount: ref(),
+      deploy_amount: ref(),
+      tick_repeat: ref(0),
+      deploy_limit: ref(),
       file_data: ref({data: {}}),
       fileList: ref([]),
       text: ref(""),
@@ -207,7 +216,6 @@ export default defineComponent({
       pepeMoji: ref(0),
       depp: ref(0),
       meme: ref(0),
-      fren: ref(0),
       punk: ref(0),
       rock: ref(0),
       pepe: ref(0),
@@ -218,18 +226,23 @@ export default defineComponent({
   },
   props: ['clear_inner_child_data'],
   methods: {
+    validateTickAmount(value) {
+      if (!Number.isInteger(value) || value <= 1) {
+        return 'Amount must be an integer above 1'
+      }
+      return true
+    },
     selectTab(tab) {
       this.fileList = [];
       this.file_data['data'] = {};
-      this.pepeMoji = 0;
-      this.depp = 0;
-      this.meme = 0;
-      this.fren = 0;
-      this.punk = 0;
-      this.rock = 0;
-      this.pepe = 0;
-      this.kek = 0;
       this.selected_tab = tab
+      this.deploy_tick = '';
+      this.deploy_limit = null;
+      this.deploy_amount = null;
+      this.file_data['data'] = {};
+      this.tick_repeat = 0;
+      this.tick = '';
+      this.tick_amount = null;
     },
     async processInput(event) {
       const lineDiv = event.target;
@@ -337,158 +350,196 @@ export default defineComponent({
     //     };
     //   }
     // },
-    pepeMojiInput() {
+    removeFileData() {
+      this.file_data['data'] = {}
+      this.tick_repeat = 0
+    },
+    removeDeployData() {
+      this.file_data['data'] = {}
+      this.deploy_tick = '';
+      this.deploy_limit = null;
+      this.deploy_amount = null;
+      this.file_data['data'] = {};
+      this.tick_repeat = 0;
+      this.tick = '';
+      this.tick_amount = null;
+    },
+    genericBRCInput() {
       Object.keys(this.file_data['data'])
-        .filter(key => key.includes("pepeMoji"))
+        .filter(key => key.includes(this.tick))
         .forEach(key => delete this.file_data['data'][key]);
 
-      for (let i = 1; i <= this.pepeMoji; i++) {
+      for (let i = 0; i < this.tick_repeat; i++) {
         const dict = {
           "p": "brc-20",
           "op": "mint",
-          "tick": "🐸🐸",
-          "amt": "300"
+          "tick": this.tick,
+          "amt": this.tick_amount.toString()
         };
         const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
+        this.file_data['data'][i + "_" + this.tick + '.txt'] = {
           contentType: 'text/plain;charset=utf-8',
           rawData: rawData,
         };
       }
     },
-    deppInput() {
+    genericDeployInput() {
+      console.log(!this.deploy_limit || !this.deploy_limit || !this.deploy_tick)
+      if (!this.deploy_limit || !this.deploy_limit || !this.deploy_tick) {
+        return
+      }
+
       Object.keys(this.file_data['data'])
-        .filter(key => key.includes("depp"))
+        .filter(key => key.includes('deploy'))
         .forEach(key => delete this.file_data['data'][key]);
 
-      for (let i = 1; i <= this.depp; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "depp",
-          "amt": "1000"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
-    },
-    memeInput() {
-      Object.keys(this.file_data['data'])
-        .filter(key => key.includes("meme"))
-        .forEach(key => delete this.file_data['data'][key]);
+      const dict = {
+        "p": "brc-20",
+        "op": "deploy",
+        "tick": this.deploy_tick,
+        "amt": this.deploy_amount.toString(),
+        "lim": this.deploy_limit.toString(),
+      };
+      const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+      this.file_data['data']["_deploy" + this.tick + '.txt'] = {
+        contentType: 'text/plain;charset=utf-8',
+        rawData: rawData,
+      };
 
-      for (let i = 1; i <= this.meme; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "meme",
-          "amt": "1"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
     },
-    frenInput() {
-      Object.keys(this.file_data['data'])
-        .filter(key => key.includes("fren"))
-        .forEach(key => delete this.file_data['data'][key]);
-
-      for (let i = 1; i <= this.fren; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "fren",
-          "amt": "1"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
-    },
-    punkInput() {
-      Object.keys(this.file_data['data'])
-        .filter(key => key.includes("punk"))
-        .forEach(key => delete this.file_data['data'][key]);
-
-      for (let i = 1; i <= this.punk; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "punk",
-          "amt": "1"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
-    },
-    rockInput() {
-      Object.keys(this.file_data['data'])
-        .filter(key => key.includes("rock"))
-        .forEach(key => delete this.file_data['data'][key]);
-
-      for (let i = 1; i <= this.rock; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "rock",
-          "amt": "1"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
-    },
-    pepeInput() {
-      Object.keys(this.file_data['data'])
-        .filter(key => key.includes("pepe"))
-        .forEach(key => delete this.file_data['data'][key]);
-
-      for (let i = 1; i <= this.pepe; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "pepe",
-          "amt": "420"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
-    },
-    kekInput() {
-      Object.keys(this.file_data['data'])
-        .filter(key => key.includes("kek"))
-        .forEach(key => delete this.file_data['data'][key]);
-
-      for (let i = 1; i <= this.kek; i++) {
-        const dict = {
-          "p": "brc-20",
-          "op": "mint",
-          "tick": "kek",
-          "amt": "69"
-        };
-        const rawData = Buffer.from(JSON.stringify(dict, null, 2));
-        this.file_data['data'][i + "_ord" + '.txt'] = {
-          contentType: 'text/plain;charset=utf-8',
-          rawData: rawData,
-        };
-      }
-    },
+    // pepeMojiInput() {
+    //   Object.keys(this.file_data['data'])
+    //     .filter(key => key.includes("pepeMoji"))
+    //     .forEach(key => delete this.file_data['data'][key]);
+    //
+    //   for (let i = 1; i <= this.pepeMoji; i++) {
+    //     const dict = {
+    //       "p": "brc-20",
+    //       "op": "mint",
+    //       "tick": "🐸🐸",
+    //       "amt": "300"
+    //     };
+    //     const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+    //     this.file_data['data'][i + "_ord" + '.txt'] = {
+    //       contentType: 'text/plain;charset=utf-8',
+    //       rawData: rawData,
+    //     };
+    //   }
+    // },
+    // deppInput() {
+    //   Object.keys(this.file_data['data'])
+    //     .filter(key => key.includes("depp"))
+    //     .forEach(key => delete this.file_data['data'][key]);
+    //
+    //   for (let i = 1; i <= this.depp; i++) {
+    //     const dict = {
+    //       "p": "brc-20",
+    //       "op": "mint",
+    //       "tick": "depp",
+    //       "amt": "1000"
+    //     };
+    //     const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+    //     this.file_data['data'][i + "_ord" + '.txt'] = {
+    //       contentType: 'text/plain;charset=utf-8',
+    //       rawData: rawData,
+    //     };
+    //   }
+    // },
+    // memeInput() {
+    //   Object.keys(this.file_data['data'])
+    //     .filter(key => key.includes("meme"))
+    //     .forEach(key => delete this.file_data['data'][key]);
+    //
+    //   for (let i = 1; i <= this.meme; i++) {
+    //     const dict = {
+    //       "p": "brc-20",
+    //       "op": "mint",
+    //       "tick": "meme",
+    //       "amt": "1"
+    //     };
+    //     const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+    //     this.file_data['data'][i + "_ord" + '.txt'] = {
+    //       contentType: 'text/plain;charset=utf-8',
+    //       rawData: rawData,
+    //     };
+    //   }
+    // },
+    // punkInput() {
+    //   Object.keys(this.file_data['data'])
+    //     .filter(key => key.includes("punk"))
+    //     .forEach(key => delete this.file_data['data'][key]);
+    //
+    //   for (let i = 1; i <= this.punk; i++) {
+    //     const dict = {
+    //       "p": "brc-20",
+    //       "op": "mint",
+    //       "tick": "punk",
+    //       "amt": "1"
+    //     };
+    //     const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+    //     this.file_data['data'][i + "_ord" + '.txt'] = {
+    //       contentType: 'text/plain;charset=utf-8',
+    //       rawData: rawData,
+    //     };
+    //   }
+    // },
+    // rockInput() {
+    //   Object.keys(this.file_data['data'])
+    //     .filter(key => key.includes("rock"))
+    //     .forEach(key => delete this.file_data['data'][key]);
+    //
+    //   for (let i = 1; i <= this.rock; i++) {
+    //     const dict = {
+    //       "p": "brc-20",
+    //       "op": "mint",
+    //       "tick": "rock",
+    //       "amt": "1"
+    //     };
+    //     const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+    //     this.file_data['data'][i + "_ord" + '.txt'] = {
+    //       contentType: 'text/plain;charset=utf-8',
+    //       rawData: rawData,
+    //     };
+    //   }
+    // },
+    // pepeInput() {
+    //   Object.keys(this.file_data['data'])
+    //     .filter(key => key.includes("pepe"))
+    //     .forEach(key => delete this.file_data['data'][key]);
+    //
+    //   for (let i = 1; i <= this.pepe; i++) {
+    //     const dict = {
+    //       "p": "brc-20",
+    //       "op": "mint",
+    //       "tick": "pepe",
+    //       "amt": "420"
+    //     };
+    //     const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+    //     this.file_data['data'][i + "_ord" + '.txt'] = {
+    //       contentType: 'text/plain;charset=utf-8',
+    //       rawData: rawData,
+    //     };
+    //   }
+    // },
+    // kekInput() {
+    //   Object.keys(this.file_data['data'])
+    //     .filter(key => key.includes("kek"))
+    //     .forEach(key => delete this.file_data['data'][key]);
+    //
+    //   for (let i = 1; i <= this.kek; i++) {
+    //     const dict = {
+    //       "p": "brc-20",
+    //       "op": "mint",
+    //       "tick": "kek",
+    //       "amt": "69"
+    //     };
+    //     const rawData = Buffer.from(JSON.stringify(dict, null, 2));
+    //     this.file_data['data'][i + "_ord" + '.txt'] = {
+    //       contentType: 'text/plain;charset=utf-8',
+    //       rawData: rawData,
+    //     };
+    //   }
+    // },
     handleAdded(files) {
       this.addFiles(files);
     },
@@ -531,14 +582,12 @@ export default defineComponent({
     clear_inner_child_data: function () {
       if (this.clear_inner_child_data) {
         this.file_data = {data: {}};
-        this.pepeMoji = 0
-        this.depp = 0
-        this.meme = 0
-        this.fren = 0
-        this.punk = 0
-        this.rock = 0
-        this.pepe = 0
-        this.kek = 0
+        this.deploy_tick = '';
+        this.deploy_limit = null;
+        this.deploy_amount = null;
+        this.tick_repeat = 0;
+        this.tick = '';
+        this.tick_amount = null;
         this.$emit('update_clear_inner_child_data', false)
       }
     }
@@ -547,6 +596,12 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin-top: 0;
+}
 
 </style>

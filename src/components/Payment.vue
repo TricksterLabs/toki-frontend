@@ -13,29 +13,35 @@
         />
       </div>
 
-      <div class="col-12 q-mt-xs custom_input">
+      <div class="col-12 text-caption text-italic text-center">
+        Send the following amount:
+      </div>
+      <div class="col-6 custom_input">
+        <q-input outlined :model-value="market_response.order_service_cost/100000000" dense readonly dark color="positive"
+                 class="full-width-right" padding="sm md" label="Amount (BTC)"
+                 @click="copyContent(market_response.order_service_cost/100000000)"
+        />
+      </div>
+      <div class="col-6 custom_input">
+        <q-input outlined :model-value="market_response.order_service_cost" dense readonly dark color="positive"
+                 class="full-width q-mr-sm" padding="sm md" label="Amount (Satoshi)"
+                 @click="copyContent(market_response.order_service_cost)"
+        />
+      </div>
+      <div class="col-12 text-caption text-italic text-center">
+        To the following address:
+      </div>
+      <div class="col-12 custom_input">
         <q-input outlined v-model="market_response.serviceAddress" readonly dense dark input-class=""
                  class="" padding="sm md" @click="copyContent(market_response.serviceAddress)"
                  label="Bitcoin Address" color="positive"
         >
         </q-input>
       </div>
-      <div class="col-6 q-mt-xs custom_input">
-        <q-input outlined :model-value="market_response.order_service_cost/100000000" dense readonly dark color="positive"
-                 class="full-width-right" padding="sm md" label="Amount (BTC)"
-                 @click="copyContent(market_response.order_service_cost/100000000)"
-        />
-      </div>
-      <div class="col-6 q-mt-xs custom_input">
-        <q-input outlined :model-value="market_response.order_service_cost" dense readonly dark color="positive"
-                 class="full-width q-mr-sm" padding="sm md" label="Amount (Satoshi)"
-                 @click="copyContent(market_response.order_service_cost)"
-        />
-      </div>
     </q-card-section>
 
-    <q-card-section v-if="message" class="" style="margin-top: 3px">
-      <q-card class="bg-transparent active_border row flex items-center" style="height: 10rem;">
+    <q-card-section v-if="message">
+      <q-card class="bg-transparent active_border row flex items-center" style="height: 7rem;">
         <q-card-section class="text-center col-12 q-pt-lg text-h6">
           {{ message }}
           <br/>
