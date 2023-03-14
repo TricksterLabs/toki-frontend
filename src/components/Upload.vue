@@ -1,21 +1,17 @@
 <template>
   <q-card class="bg-transparent no-shadow" style="height: 408px;max-height: 408px"
-          :style="$q.screen.lt.sm?{'max-width': '20rem','min-width': '20rem'}:{'max-width': '35rem','min-width': '35rem'}">
+    :style="$q.screen.lt.sm?{'max-width': '20rem','min-width': '20rem'}:{'max-width': '35rem','min-width': '35rem'}">
     <q-card-section class="q-pa-none text-center" :class="$q.screen.lt.sm?'q-px-none':''">
       <q-btn @click="selectTab('Files')"
-             :class="(selected_tab==='Files'?'active_item':'button_width')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
-             color="secondary"
-             no-caps
-             outline size="lg" :label="'FILES'"/>
+        :class="(selected_tab==='Files'?'active_item':'button_width')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
+        color="secondary" no-caps outline size="lg" :label="'FILES'" />
       <q-btn @click="selectTab('Sns')"
-             :class="(selected_tab==='Sns'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
-             class="q-ml-md "
-             color="secondary" no-caps outline size="lg" :label="'SNS'"/>
+        :class="(selected_tab==='Sns'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
+        class="q-ml-md " color="secondary" no-caps outline size="lg" :label="'SNS'" />
 
       <q-btn @click="selectTab('BRC20')"
-             :class="(selected_tab==='BRC20'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
-             class="q-ml-md "
-             color="secondary" no-caps outline size="lg" :label="'BRC20'"/>
+        :class="(selected_tab==='BRC20'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
+        class="q-ml-md " color="secondary" no-caps outline size="lg" :label="'BRC20'" />
       <!--      <q-btn class="q-ml-md " disable-->
       <!--             :class="($q.screen.lt.sm?'button_width_mobile':' button_width')"-->
       <!--             color="secondary" no-caps outline size="lg" :label="'Collection'">-->
@@ -31,16 +27,12 @@
         </div>
       </q-card-section>
       <q-card-section class="text-center items-center justify-center q-pb-sm" :class="$q.screen.lt.sm?'q-px-none':''">
-        <q-uploader class="no-shadow remove_padding" ref="file"
-                    :class="$q.screen.lt.sm?'dropzone_mobile':'dropzone'"
-                    url="http://localhost:4444/upload"
-                    @added="handleAdded"
-                    multiple
-        >
+        <q-uploader class="no-shadow remove_padding" ref="file" :class="$q.screen.lt.sm?'dropzone_mobile':'dropzone'"
+          url="http://localhost:4444/upload" @added="handleAdded" multiple>
           <template v-slot:list="scope">
             <q-list separator dark>
               <q-item v-for="file in scope.files.sort(naturalCompare)" :key="file.__key"
-                      class="full-width q-my-xs q-pa-md" style="border-color: ">
+                class="full-width q-my-xs q-pa-md" style="border-color: ">
                 <q-item-section class="text-center">
                   <q-item-label class="full-width text-weight-bolder ellipsis">
                     {{ file.name }}
@@ -48,19 +40,18 @@
 
                   <q-item-label caption class="text-white">
                     {{ file.__sizeLabel }} / <span v-if="file_data_display.hasOwnProperty(file.name)"> {{
-                      file_data_display[file.name]['contentType']
-                    }}</span>
+                                          file_data_display[file.name]['contentType']
+                                          }}</span>
                   </q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
 
             <q-item-section class="drag-drop" v-if="scope.files.length===0"
-                            :style="$q.screen.lt.sm?{'margin-top':'2rem !important'}:{}">
+              :style="$q.screen.lt.sm?{'margin-top':'2rem !important'}:{}">
               <q-item-label>
-                <q-icon name="cloud_upload" class="cursor-pointer" size="100px"
-                        @click="$refs.file.pickFiles()"
-                        color="white"/>
+                <q-icon name="cloud_upload" class="cursor-pointer" size="100px" @click="$refs.file.pickFiles()"
+                  color="white" />
                 <div>{{ dropzoneText }}</div>
               </q-item-label>
             </q-item-section>
@@ -77,25 +68,19 @@
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center">
         <div class="text-subtitle1 ">Add your .sats names below, each one on a new line.</div>
       </q-card-section>
-      <q-card-section :class="$q.screen.lt.sm?'q-px-none':''"
-                      class="text-center items-center q-pt-none justify-center">
+      <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center items-center q-pt-none justify-center">
         <div :class="$q.screen.lt.sm?'textarea_mobile':'textarea'">
-          <div
-            contenteditable="true"
-            ref="editor" spellcheck="false"
-            @keydown.enter="processInput"
-            style="white-space: pre-wrap;padding: 10px;margin-left: -10px;margin-right: -10px"
-            class="editor"
-          >
+          <div contenteditable="true" ref="editor" spellcheck="false" @keydown.enter="processInput"
+            style="white-space: pre-wrap;padding: 10px;margin-left: -10px;margin-right: -10px" class="editor">
           </div>
         </div>
 
         <div class="q-mb-md">
-          <q-badge color="" style="background-color: #00e676" rounded class="q-mr-sm"/>
+          <q-badge color="" style="background-color: #00e676" rounded class="q-mr-sm" />
           Domain is Free
-          <q-badge color="red" rounded class="q-ml-md"/>
+          <q-badge color="red" rounded class="q-ml-md" />
           <span class="q-ml-sm">Domain is Taken</span>
-          <q-badge color="yellow" rounded class="q-ml-md"/>
+          <q-badge color="yellow" rounded class="q-ml-md" />
           <span class="q-ml-sm">API error</span>
         </div>
         <div class="text-caption text-italic">
@@ -109,80 +94,56 @@
       </q-card-section>
       <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center q-pa-none q-pb-xs">
         <q-radio v-model="mint_type" checked-icon="task_alt" dark unchecked-icon="panorama_fish_eye" val="mint"
-                 color="info" @update:model-value="removeDeployData"
-                 size="50px"
-                 label="Mint"/>
+          color="info" @update:model-value="removeDeployData" size="50px" label="Mint" />
         <q-radio v-model="mint_type" checked-icon="task_alt" dark unchecked-icon="panorama_fish_eye" val="deploy"
-                 color="info"
-                 size="50px"
-                 label="Deploy"/>
+          color="info" size="50px" label="Deploy" />
 
       </q-card-section>
-      <q-card-section :class="$q.screen.lt.sm?'q-px-none':''"
-                      class="text-center items-center q-pt-none justify-center">
+      <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center items-center q-pt-none justify-center">
         <div v-if="mint_type==='mint'">
-          <q-input outlined
-                   v-model="tick" dense dark color="secondary"
-                   class="full-width q-mr-sm" padding="sm md" label="Tick"
-                   hide-bottom-space @update:model-value="removeFileData"
-                   :rules="[
-                    val => val.length > 1 || 'Tick should be greater than 1 character',
-                    val => val.length < 64 || 'Tick should be less than 64 characters'
-                  ]"
-          />
+          <q-input outlined v-model="tick" dense dark color="secondary" class="full-width q-mr-sm" padding="sm md"
+            label="Tick" hide-bottom-space @update:model-value="removeFileData" :rules="[
+                                  val => val.length >= 1 || 'Tick should be greater than 1 character',
+                                  val => val.length < 64 || 'Tick should be less than 64 characters'
+                                ]" />
 
-          <q-input outlined
-                   v-model.number="tick_amount" dense dark color="secondary"
-                   class="full-width q-mr-sm q-mt-sm" padding="sm md" label="Amount"
-                   hide-bottom-space type="number" id="myNumberInput"
-                   :rules="[
-                        val => Number.isInteger(val) || 'Amount must be an integer',
-                        val => val >= 1 || 'Amount must be greater than 1'
-                      ]"
-          />
+          <q-input outlined v-model.number="tick_amount" dense dark color="secondary" class="full-width q-mr-sm q-mt-sm"
+            padding="sm md" label="Amount" hide-bottom-space type="number" id="myNumberInput" :rules="[
+                                      val => Number.isInteger(val) || 'Amount must be an integer',
+                                      val => val >= 1 || 'Amount must be greater than 1'
+                                    ]" />
 
           <div class="q-mt-sm">
             <q-badge color="secondary" class="">
               Repeat Mint
             </q-badge>
 
-            <q-slider v-model="tick_repeat" :min="0" :disable="!tick && !tick_amount || tick.length !== 1" :max="100"
-                      color="secondary"
-                      @update:model-value="genericBRCInput" label-always switch-label-side/>
+            <q-slider v-model="tick_repeat" :min="0" :disable="!tick && !tick_amount || tick.length >= 1" :max="100"
+              color="secondary" @update:model-value="genericBRCInput" label-always switch-label-side />
           </div>
         </div>
 
         <div v-if="mint_type==='deploy'">
-          <q-input outlined
-                   v-model="deploy_tick" dense dark color="secondary"
-                   class="full-width q-mr-sm" padding="sm md" label="Tick"
-                   hide-bottom-space @update:model-value="genericDeployInput"
-                   :rules="[
-                    val => val.length > 1 || 'Tick should be greater than 1 character',
-                    val => val.length < 64 || 'Tick should be less than 64 characters'
-                  ]"
-          />
+          <q-input outlined v-model="deploy_tick" dense dark color="secondary" class="full-width q-mr-sm" padding="sm md"
+            label="Tick" hide-bottom-space @update:model-value="genericDeployInput" :rules="[
+                                  val => val.length >= 1 || 'Tick should be greater than 1 character',
+                                  val => val.length < 64 || 'Tick should be less than 64 characters'
+                                ]" />
 
-          <q-input outlined @update:model-value="genericDeployInput"
-                   v-model.number="deploy_amount" dense dark color="secondary"
-                   class="full-width q-mr-sm q-mt-sm" padding="sm md" label="Total Supply"
-                   hide-bottom-space type="number"
-                   :rules="[
-                        val => Number.isInteger(val) || 'Amount must be an integer',
-                        val => val >= 1 || 'Amount must be greater than 1'
-                      ]"
-          />
+          <q-input outlined @update:model-value="genericDeployInput" v-model.number="deploy_amount" dense dark
+            color="secondary" class="full-width q-mr-sm q-mt-sm" padding="sm md" label="Total Supply" hide-bottom-space
+            type="number" :rules="[
+                                      val => Number.isInteger(val) || 'Amount must be an integer',
+                                      val => val >= 1 || 'Amount must be greater than 1'
+                                    ]" />
 
-          <q-input outlined @update:model-value="genericDeployInput"
-                   v-model.number="deploy_limit" dense dark color="secondary"
-                   class="full-width q-mr-sm q-mt-sm" padding="sm md" label="Limit Per Mint"
-                   hide-bottom-space type="number"
-                   :rules="[
-                        val => Number.isInteger(val) || 'Amount must be an integer',
-                        val => val >= 1 || 'Amount must be greater than 1',
-                        val => val < deploy_amount || 'Limit per mint must be lower than deploy amount'
-                      ]"
-          />
+          <q-input outlined @update:model-value="genericDeployInput" v-model.number="deploy_limit" dense dark
+            color="secondary" class="full-width q-mr-sm q-mt-sm" padding="sm md" label="Limit Per Mint" hide-bottom-space
+            type="number" :rules="[
+                                      val => Number.isInteger(val) || 'Amount must be an integer',
+                                      val => val >= 1 || 'Amount must be greater than 1',
+                                      val => val < deploy_amount || 'Limit per mint must be lower than deploy amount'
+                                    ]" />
         </div>
         <div class="text-caption text-italic q-mt-xl">
           BRC20 tokens are experimental. Please use at your own risk.
@@ -193,7 +154,7 @@
 </template>
 
 <script>
-import {defineComponent, ref} from 'vue'
+import { defineComponent, ref } from 'vue'
 import mime from 'mime-types';
 import naturalCompare from "natural-compare";
 
@@ -209,7 +170,7 @@ export default defineComponent({
       deploy_amount: ref(),
       tick_repeat: ref(0),
       deploy_limit: ref(),
-      file_data: ref({data: {}}),
+      file_data: ref({ data: {} }),
       fileList: ref([]),
       text: ref(""),
       // ordi: ref(0),
@@ -581,7 +542,7 @@ export default defineComponent({
     },
     clear_inner_child_data: function () {
       if (this.clear_inner_child_data) {
-        this.file_data = {data: {}};
+        this.file_data = { data: {} };
         this.deploy_tick = '';
         this.deploy_limit = null;
         this.deploy_amount = null;
@@ -597,11 +558,9 @@ export default defineComponent({
 </script>
 
 <style>
-
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin-top: 0;
 }
-
 </style>
