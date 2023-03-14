@@ -146,7 +146,7 @@
               Repeat Mint
             </q-badge>
 
-            <q-slider v-model="tick_repeat" :min="0" :disable="!tick && !tick_amount || tick.length !== 4" :max="100"
+            <q-slider v-model="tick_repeat" :min="0" :disable="!tick && !tick_amount || tick.length !== 1" :max="100"
                       color="secondary"
                       @update:model-value="genericBRCInput" label-always switch-label-side/>
           </div>
