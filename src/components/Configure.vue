@@ -129,9 +129,10 @@
                        class="" padding="sm md" :min="gas_fee_data['economyFee']" max="50"
                        :rules="[
                                 (v) => !!v || 'Amount is required',
-                                (v) => /^\d+(\.\d{1,2})?$/.test(v) || 'Amount should have at most 2 decimal points',
-                                (v) => parseFloat(v) >= gas_fee_data['economyFee'] || 'Amount should be above '+gas_fee_data['economyFee'],
-                                (v) => parseFloat(v) < 50 || 'Amount should be below 50',
+                                // (v) => /^\d+(\.\d{1,2})?$/.test(v) || 'Amount should have at most 2 decimal points',
+                                (v) => /^\d+$/.test(v) || 'Amount should be an integer',
+                                (v) => parseInt(v) >= gas_fee_data['economyFee'] || 'Amount should be above '+gas_fee_data['economyFee'],
+                                (v) => parseInt(v) < 50 || 'Amount should be below 50',
                               ]"
               />
             </q-card-section>
@@ -179,7 +180,7 @@ export default defineComponent({
   setup() {
     return {
       market_data_copy: ref({}),
-      order_transaction_mode_options: [{label: 'Chained', value: 'Chained'}, {
+      order_transaction_mode_options: [{label: 'Chained', value: 'Chained', inactive: true}, {
         label: 'Batched',
         value: 'Batched'
       }, {label: 'Collection', value: 'Collection', inactive: true}]

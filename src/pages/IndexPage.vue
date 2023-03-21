@@ -174,7 +174,7 @@ export default defineComponent({
         receiving_address_multi: {},
         receiving_mode: 'Single Address',
         selected_fee: 'halfHourFee',
-        order_transaction_mode: 'Chained',
+        order_transaction_mode: 'Batched',
         inscription_padding: 546,
         inscription_checkpoint_steps: 20
       }),
@@ -254,7 +254,7 @@ export default defineComponent({
         receiving_address_multi: {},
         receiving_mode: 'Single Address',
         selected_fee: 'halfHourFee',
-        order_transaction_mode: 'Chained',
+        order_transaction_mode: 'Batched',
         inscription_padding: 546,
         inscription_checkpoint_steps: 20
       }
