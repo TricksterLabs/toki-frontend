@@ -71,7 +71,7 @@
                   @mousedown="selectFee('economyFee')" bordered v-ripple
                   :class="market_data_copy.selected_fee==='economyFee'?'active_border':''">
             <q-card-section class="col-12 q-pa-sm">
-              Unknown <br/>
+              No Priority <br/>
             </q-card-section>
             <q-card-section class="q-pt-none card_margin">
               <span class="text-subtitle1 text-weight-bolder">{{ gas_fee_data['economyFee'] }}</span>
