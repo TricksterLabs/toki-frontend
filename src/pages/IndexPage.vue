@@ -399,10 +399,10 @@ export default defineComponent({
       // }
       if (referral) {
         return parseInt((parseFloat((this.market_data.selected_fee !== 'Custom' ?
-          this.gas_fee_data[this.market_data.selected_fee] : this.market_data.custom_fee)) * cost) * 1 + Object.keys(this.file_data['data']).length * 546 + 2500) + 43;
+          this.gas_fee_data[this.market_data.selected_fee] : this.market_data.custom_fee)) * cost) * 1.25 + Object.keys(this.file_data['data']).length * 5546) + 43;
       } else {
         return parseInt((parseFloat((this.market_data.selected_fee !== 'Custom' ?
-          this.gas_fee_data[this.market_data.selected_fee] : this.market_data.custom_fee)) * cost) * 1 + Object.keys(this.file_data['data']).length * 546 + 2500);
+          this.gas_fee_data[this.market_data.selected_fee] : this.market_data.custom_fee)) * cost) * 1.25 + Object.keys(this.file_data['data']).length * 5546);
       }
       // parseInt((this.session_data.order_vbytes_count * (this.market_data.selected_fee!='Custom'?gas_fee_data[this.market_data.selected_fee]:this.market_data.custom_fee)) * 1.25 + this.session_data.order_file_count * 25546
     }
