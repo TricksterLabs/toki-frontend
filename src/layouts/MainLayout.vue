@@ -4,7 +4,7 @@
       <div class="flex full-height flex-center">
         <q-toolbar class="toolbar_style">
           <q-toolbar-title class="">
-            <img src="~assets/toki_02.png" :height="$q.screen.lt.sm?25:30" class="float-left">
+            <img src="~assets/toki_02.png" :height="$q.screen.lt.sm?21:30" class="float-left">
           </q-toolbar-title>
           <q-space></q-space>
           <div>
@@ -22,12 +22,12 @@
                 Coming Soon
               </q-tooltip>
             </q-btn>
-            <q-btn label="API" :to="'/'" :class="$q.screen.lt.sm?'':'q-ml-sm'" :size="$q.screen.lt.sm?'sm':''"
-                   flat disable>
-              <q-tooltip>
-                Coming Soon
-              </q-tooltip>
-            </q-btn>
+<!--            <q-btn label="API" :to="'/'" :class="$q.screen.lt.sm?'':'q-ml-sm'" :size="$q.screen.lt.sm?'sm':''"-->
+<!--                   flat disable>-->
+<!--              <q-tooltip>-->
+<!--                Coming Soon-->
+<!--              </q-tooltip>-->
+<!--            </q-btn>-->
 
             <q-btn type="a" rounded dense href="" target="__blank" :size="$q.screen.lt.sm?'sm':'md'"
                    icon="fab fa-discord" :class="$q.screen.lt.sm?'q-mr-sm q-ml-sm':'q-mr-md q-ml-lg'" flat

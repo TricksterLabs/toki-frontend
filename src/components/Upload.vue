@@ -4,14 +4,18 @@
     <q-card-section class="q-pa-none text-center" :class="$q.screen.lt.sm?'q-px-none':''">
       <q-btn @click="selectTab('Files')"
         :class="(selected_tab==='Files'?'active_item':'button_width')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
-        color="secondary" no-caps outline size="lg" :label="'FILES'" />
+        color="secondary" no-caps outline :size="$q.screen.lt.sm?'md':'lg'" :label="'FILES'" />
       <q-btn @click="selectTab('Sns')"
         :class="(selected_tab==='Sns'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
-        class="q-ml-md " color="secondary" no-caps outline size="lg" :label="'SNS'" />
+        class="q-ml-md " color="secondary" no-caps outline :size="$q.screen.lt.sm?'md':'lg'" :label="'SNS'" />
 
       <q-btn @click="selectTab('BRC20')"
         :class="(selected_tab==='BRC20'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
-        class="q-ml-md " color="secondary" no-caps outline size="lg" :label="'BRC20'" />
+        class="q-ml-md " color="secondary" no-caps outline :size="$q.screen.lt.sm?'md':'lg'" :label="'BRC20'" />
+
+      <q-btn @click="selectTab('Text')"
+        :class="(selected_tab==='Text'?'active_item':'')+($q.screen.lt.sm?' button_width_mobile':' button_width')"
+        class="q-ml-md " color="secondary" no-caps outline :size="$q.screen.lt.sm?'md':'lg'" :label="'Text'" />
       <!--      <q-btn class="q-ml-md " disable-->
       <!--             :class="($q.screen.lt.sm?'button_width_mobile':' button_width')"-->
       <!--             color="secondary" no-caps outline size="lg" :label="'Collection'">-->
@@ -150,6 +154,14 @@
         </div>
       </q-card-section>
     </div>
+    <div v-if="selected_tab==='Text'">
+      <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center">
+        <div class="text-subtitle1 ">Input text in the format of choice.</div>
+      </q-card-section>
+      <q-card-section :class="$q.screen.lt.sm?'q-px-none':''" class="text-center q-pa-none q-pb-xs">
+        <q-input v-model="text_data" spellcheck="false" type="textarea" @update:model-value="normalTextInput" dark outlined rows="13" color="secondary"/>
+      </q-card-section>
+    </div>
   </q-card>
 </template>
 
@@ -166,6 +178,7 @@ export default defineComponent({
       tick: ref(''),
       deploy_tick: ref(''),
       mint_type: ref('mint'),
+      text_data: ref(''),
       tick_amount: ref(),
       deploy_amount: ref(),
       tick_repeat: ref(0),
@@ -203,6 +216,7 @@ export default defineComponent({
       this.file_data['data'] = {};
       this.tick_repeat = 0;
       this.tick = '';
+      this.text_data = '';
       this.tick_amount = null;
     },
     async processInput(event) {
@@ -323,6 +337,7 @@ export default defineComponent({
       this.file_data['data'] = {};
       this.tick_repeat = 0;
       this.tick = '';
+      this.text_data = '';
       this.tick_amount = null;
     },
     genericBRCInput() {
@@ -343,6 +358,13 @@ export default defineComponent({
           rawData: rawData,
         };
       }
+    },
+    normalTextInput() {
+      this.file_data['data'] = {}
+      this.file_data['data'][1 + "_text_data.txt"] = {
+        contentType: 'text/plain;charset=utf-8',
+        rawData: Buffer.from(this.text_data),
+      };
     },
     genericDeployInput() {
       console.log(!this.deploy_limit || !this.deploy_limit || !this.deploy_tick)
@@ -548,6 +570,7 @@ export default defineComponent({
         this.deploy_amount = null;
         this.tick_repeat = 0;
         this.tick = '';
+        this.text_data = '';
         this.tick_amount = null;
         this.$emit('update_clear_inner_child_data', false)
       }

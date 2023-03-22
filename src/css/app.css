@@ -12,12 +12,13 @@
 
 
 .textarea_mobile {
-  border: 1px solid #ccc;
+  border: 1px solid #26a69a;
   padding: 10px;
   margin-bottom: 10px;
-  min-height: 200px;
+  min-height: 180px;
   line-height: 1.5em;
   max-height: 230px;
+  border-radius: 8px;
   overflow-y: auto;
 }
 
@@ -82,7 +83,7 @@
   flex-direction: column;
   width: 100%;
   height: 240px;
-  border: 2px dashed #ccc;
+  border: 2px dashed #26a69a;
   border-radius: 8px;
   background-color: transparent;
   margin-bottom: 16px;
@@ -254,5 +255,5 @@
 }
 
 .button_width_mobile{
-  width: 95px !important;
+  width: 68px !important;
 }
