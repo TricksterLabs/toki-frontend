@@ -49,7 +49,7 @@
             What are your fees?
           </div>
           <div class="text-caption text-secondary">
-            We charge 0.00020 BTC per file and 25% of the network fees selected.
+            We charge 0.00005 BTC per file and 25% of the network fees selected.
           </div>
           <div class="text-subtitle1 q-mt-md">
             What is FILES?
