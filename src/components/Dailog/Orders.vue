@@ -54,7 +54,7 @@
                     </div>
                     <div class="col-6">
                       <q-input outlined v-model="order.order_transaction_mode" dense readonly dark color="secondary"
-                               class="full-width q-mr-sm" padding="sm md" label="Order File Size"
+                               class="full-width q-mr-sm" padding="sm md" label="Order Transaction Mode"
                       />
                     </div>
                     <div class="col-6">
