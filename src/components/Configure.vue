@@ -126,13 +126,13 @@
               <q-input input-class="text-center text-subtitle1 text-weight-bolder" type="text"
                        hide-bottom-space outlined
                        v-model="market_data_copy.custom_fee" dense dark color="secondary"
-                       class="" padding="sm md" :min="gas_fee_data['economyFee']" max="50"
+                       class="" padding="sm md" :min="gas_fee_data['economyFee']" max="100"
                        :rules="[
                                 (v) => !!v || 'Amount is required',
                                 // (v) => /^\d+(\.\d{1,2})?$/.test(v) || 'Amount should have at most 2 decimal points',
                                 (v) => /^\d+$/.test(v) || 'Amount should be an integer',
                                 (v) => parseInt(v) >= gas_fee_data['economyFee'] || 'Amount should be above '+gas_fee_data['economyFee'],
-                                (v) => parseInt(v) < 50 || 'Amount should be below 50',
+                                (v) => parseInt(v) < 500 || 'Amount should be below 100',
                               ]"
               />
             </q-card-section>
