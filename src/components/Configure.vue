@@ -132,7 +132,7 @@
                                 // (v) => /^\d+(\.\d{1,2})?$/.test(v) || 'Amount should have at most 2 decimal points',
                                 (v) => /^\d+$/.test(v) || 'Amount should be an integer',
                                 (v) => parseInt(v) >= gas_fee_data['economyFee'] || 'Amount should be above '+gas_fee_data['economyFee'],
-                                (v) => parseInt(v) < 500 || 'Amount should be below 100 ',
+                                (v) => parseInt(v) < 500 || 'Amount should be below 500',
                               ]"
               />
             </q-card-section>
