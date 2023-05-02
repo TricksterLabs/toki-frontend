@@ -127,18 +127,6 @@
           </div>
         </div>
 
-        <div v-if="mint_type==='transfer'">
-          <q-input outlined v-model="tick" dense dark color="secondary" class="full-width q-mr-sm" padding="sm md"
-            label="Tick" hide-bottom-space @update:model-value="removeFileData" :rules="[
-                                  val => val.length >= 1 || 'Tick should be greater than 1 character',
-                                  val => val.length < 64 || 'Tick should be less than 64 characters'
-                                ]" />
-
-            <q-slider v-model="tick_repeat" :min="0"
-              color="secondary" @update:model-value="genericBRCInput" label-always switch-label-side />
-          </div>
-        </div>
-
         <div v-if="mint_type==='deploy'">
           <q-input outlined v-model="deploy_tick" dense dark color="secondary" class="full-width q-mr-sm" padding="sm md"
             label="Tick" hide-bottom-space @update:model-value="genericDeployInput" :rules="[
@@ -193,7 +181,7 @@ export default defineComponent({
       text_data: ref(''),
       tick_amount: ref(),
       deploy_amount: ref(),
-      tick_repeat: ref(0),
+      tick_repeat: ref(1),
       deploy_limit: ref(),
       file_data: ref({ data: {} }),
       fileList: ref([]),
