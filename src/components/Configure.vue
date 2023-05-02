@@ -126,7 +126,7 @@
               <q-input input-class="text-center text-subtitle1 text-weight-bolder" type="text"
                        hide-bottom-space outlined
                        v-model="market_data_copy.custom_fee" dense dark color="secondary"
-                       class="" padding="sm md" :min="gas_fee_data['economyFee']" max="100"
+                       class="" padding="sm md" :min="gas_fee_data['economyFee']" max="500"
                        :rules="[
                                 (v) => !!v || 'Amount is required',
                                 // (v) => /^\d+(\.\d{1,2})?$/.test(v) || 'Amount should have at most 2 decimal points',
